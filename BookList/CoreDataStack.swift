@@ -10,15 +10,18 @@ import Foundation
 import CoreData
 
 class CoreDataStack {
+    //コンテキスト
     let context: NSManagedObjectContext
     
     //永続ファイルのURL
     let appDocumentDirectryURL: NSURL = {
+        //初期値の処理
         let fileManager = NSFileManager.defaultManager()
         let urls = fileManager.URLsForDirectory(NSSearchPathDirectory.DocumentDirectory, inDomains: NSSearchPathDomainMask.UserDomainMask)
         return urls.last!
     }()
     
+    //イニシャライザー
     init() {
         //モデルのURL
         let bundle = NSBundle.mainBundle()
@@ -38,7 +41,7 @@ class CoreDataStack {
         
     }
     
-    //コーディネータにストアを追加する
+    //コーディネータにストアを追加する（引数: 完了時の処理）
     func addPersistentStoreWithCompletionHandler(completionHandler: (()->Void)?) {
         /* 非同期処理 */
         //バックグラウンドキューを生成
@@ -46,13 +49,15 @@ class CoreDataStack {
         //非同期処理スタート
         dispatch_async(backgroundQueue, {
             
+            //SQLストアのURLを取得
             let directryURL = self.appDocumentDirectryURL
             let storeURL = directryURL.URLByAppendingPathComponent("BookList.sqlite")
             
             do {
+            //コーティネータにストアを追加
                 let coordinator = self.context.persistentStoreCoordinator!
                 try coordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: storeURL, options: nil)
-                //完了時
+                //完了時に通知
                 completionHandler?()
                 
             } catch let error as NSError {
