@@ -38,4 +38,27 @@ class CoreDataStack {
         
     }
     
+    //コーディネータにストアを追加する
+    func addPersistentStoreWithCompletionHandler(completionHandler: (()->Void)?) {
+        /* 非同期処理 */
+        //バックグラウンドキューを生成
+        let backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)
+        //非同期処理スタート
+        dispatch_async(backgroundQueue, {
+            
+            let directryURL = self.appDocumentDirectryURL
+            let storeURL = directryURL.URLByAppendingPathComponent("BookList.sqlite")
+            
+            do {
+                let coordinator = self.context.persistentStoreCoordinator!
+                try coordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: storeURL, options: nil)
+                //完了時
+                completionHandler?()
+                
+            } catch let error as NSError {
+                fatalError("コーディネータ.ストア接続エラー: \(error)")
+            }
+        })
+    }
+    
 }
