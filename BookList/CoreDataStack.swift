@@ -7,3 +7,17 @@
 //
 
 import Foundation
+import CoreData
+
+class CoreDataStack {
+    let context: NSManagedObjectContext
+    
+    let appDocumentDirectryURL: NSURL = {
+        let fileManager = NSFileManager.defaultManager()
+        let urls = fileManager.URLsForDirectory(NSSearchPathDirectory.DocumentDirectory, inDomains: NSSearchPathDomainMask.UserDomainMask)
+        return urls.last!
+    }()
+    
+    
+    
+}
