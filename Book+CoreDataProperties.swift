@@ -14,9 +14,10 @@ import CoreData
 
 extension Book {
 
-    @NSManaged var author: String?
-    @NSManaged var registeredDate: NSDate?
-    @NSManaged var title: String?
-    @NSManaged var wish: NSNumber?
+    //「@NSManaged」キーワード（動的にアクセサが作成される）
+    @NSManaged var author: String?          //著者名
+    @NSManaged var registeredDate: NSDate?  //登録日
+    @NSManaged var title: String?           //タイトル
+    @NSManaged var wish: NSNumber?          //欲しいもの可否
 
 }
