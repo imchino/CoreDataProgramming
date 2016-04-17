@@ -56,6 +56,7 @@ class CoreDataStack {
             do {
             //コーティネータにストアを追加
                 let coordinator = self.context.persistentStoreCoordinator!
+                //返り値(NSPersistentStoreオブジェクト)は保持しない
                 try coordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: storeURL, options: nil)
                 //完了時に通知
                 completionHandler?()
@@ -64,6 +65,18 @@ class CoreDataStack {
                 fatalError("コーディネータ.ストア接続エラー: \(error)")
             }
         })
+    }
+    
+    //コンテキスト保存
+    func saveContext() throws {
+        if context.hasChanges {
+            do {
+                try context.save()
+            } catch let error as NSError {
+                print("保存に失敗: \(error)")
+                throw error
+            }
+        }
     }
     
 }
