@@ -7,15 +7,34 @@
 //
 
 import UIKit
+import CoreData
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
+    
+    //アプリケーション起動時
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        
+        /* KVCテスト */
+        let coreDataStack = CoreDataStack()
+        coreDataStack.addPersistentStoreWithCompletionHandler() {
+            //新規の管理オブジェクトbookを生成
+            let book = NSEntityDescription.insertNewObjectForEntityForName("Book", inManagedObjectContext: coreDataStack.context)
+            
+            //アトリビュートに値を追加
+            book.setValue("Hamlet", forKey: "title")
+            book.setValue("Shakespeare", forKey: "author")
+            
+            //アトリビュートの値を取得
+            let title = book.valueForKey("title")   as! String
+            let author = book.valueForKey("author") as! String
+            
+            print("タイトル: \(title), 著者名: \(author)")
+        }
         return true
     }
 
