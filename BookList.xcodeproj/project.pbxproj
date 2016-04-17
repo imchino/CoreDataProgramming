@@ -16,6 +16,8 @@
 		A48461941CC0C9A2006FFFA1 /* BookListUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48461931CC0C9A2006FFFA1 /* BookListUITests.swift */; };
 		A48461A31CC0CEAB006FFFA1 /* BookListModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A48461A11CC0CEAB006FFFA1 /* BookListModel.xcdatamodeld */; };
 		A48461A51CC0CEEE006FFFA1 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48461A41CC0CEEE006FFFA1 /* CoreDataStack.swift */; };
+		A4A8C7671CC3956500DC6196 /* Book+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4A8C7651CC3956500DC6196 /* Book+CoreDataProperties.swift */; };
+		A4A8C7681CC3956500DC6196 /* Book.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4A8C7661CC3956500DC6196 /* Book.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +53,8 @@
 		A48461951CC0C9A2006FFFA1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A48461A21CC0CEAB006FFFA1 /* BookListModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = BookListModel.xcdatamodel; sourceTree = "<group>"; };
 		A48461A41CC0CEEE006FFFA1 /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
+		A4A8C7651CC3956500DC6196 /* Book+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Book+CoreDataProperties.swift"; path = "../Book+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		A4A8C7661CC3956500DC6196 /* Book.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Book.swift; path = ../Book.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +109,8 @@
 				A48461751CC0C9A2006FFFA1 /* ViewController.swift */,
 				A48461A41CC0CEEE006FFFA1 /* CoreDataStack.swift */,
 				A48461A11CC0CEAB006FFFA1 /* BookListModel.xcdatamodeld */,
+				A4A8C7661CC3956500DC6196 /* Book.swift */,
+				A4A8C7651CC3956500DC6196 /* Book+CoreDataProperties.swift */,
 				A48461771CC0C9A2006FFFA1 /* Main.storyboard */,
 				A484617A1CC0C9A2006FFFA1 /* Assets.xcassets */,
 				A484617C1CC0C9A2006FFFA1 /* LaunchScreen.storyboard */,
@@ -264,7 +270,9 @@
 			files = (
 				A48461761CC0C9A2006FFFA1 /* ViewController.swift in Sources */,
 				A48461741CC0C9A2006FFFA1 /* AppDelegate.swift in Sources */,
+				A4A8C7681CC3956500DC6196 /* Book.swift in Sources */,
 				A48461A31CC0CEAB006FFFA1 /* BookListModel.xcdatamodeld in Sources */,
+				A4A8C7671CC3956500DC6196 /* Book+CoreDataProperties.swift in Sources */,
 				A48461A51CC0CEEE006FFFA1 /* CoreDataStack.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -490,6 +498,7 @@
 				A484619A1CC0C9A2006FFFA1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		A484619B1CC0C9A2006FFFA1 /* Build configuration list for PBXNativeTarget "BookListTests" */ = {
 			isa = XCConfigurationList;
@@ -498,6 +507,7 @@
 				A484619D1CC0C9A2006FFFA1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		A484619E1CC0C9A2006FFFA1 /* Build configuration list for PBXNativeTarget "BookListUITests" */ = {
 			isa = XCConfigurationList;
@@ -506,6 +516,7 @@
 				A48461A01CC0C9A2006FFFA1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
