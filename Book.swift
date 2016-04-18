@@ -12,6 +12,12 @@ import CoreData
 
 class Book: NSManagedObject {
 
-// Insert code here to add functionality to your managed object subclass
+    //コンテキストに最初に登録されたときだけ呼ばれる
+    override func awakeFromInsert() {
+        super.awakeFromInsert()
+        
+        //内部処理にするので、プリミティブアクセス
+        setPrimitiveValue(NSDate(), forKey: "registeredDate")
+    }
 
 }
