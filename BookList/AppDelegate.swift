@@ -18,27 +18,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     //アプリケーション起動時
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
-        /* KVCテスト */
-        let coreDataStack = CoreDataStack()
-        //コーディネータにストアを接続
-        coreDataStack.addPersistentStoreWithCompletionHandler() {
-            //新規の管理オブジェクトbookを生成
-            let book = NSEntityDescription.insertNewObjectForEntityForName("Book", inManagedObjectContext: coreDataStack.context) as! Book
-            
-            //アトリビュートに値を追加・取得（KVC）
-            book.setValue("Hamlet", forKey: "title")
-            book.setValue("Shakespeare", forKey: "author")
-            var title = book.valueForKey("title")   as! String
-            var author = book.valueForKey("author") as! String
-            
-            //アトリビュートに値を追加・取得（動的アクセサ）
-            book.title = "ハムレット"
-            book.author = "シェークスピア"
-            title = book.title!
-            author = book.author!
-            
-            print("タイトル: \(title), 著者名: \(author)")
-        }
+//        /* KVCテスト */
+//        let coreDataStack = CoreDataStack()
+//        //コーディネータにストアを接続
+//        coreDataStack.addPersistentStoreWithCompletionHandler() {
+//            //新規の管理オブジェクトbookを生成
+//            let book = NSEntityDescription.insertNewObjectForEntityForName("Book", inManagedObjectContext: coreDataStack.context) as! Book
+//            
+//            //アトリビュートに値を追加・取得（KVC）
+//            book.setValue("Hamlet", forKey: "title")
+//            book.setValue("Shakespeare", forKey: "author")
+//            var title = book.valueForKey("title")   as! String
+//            var author = book.valueForKey("author") as! String
+//            
+//            //アトリビュートに値を追加・取得（動的アクセサ）
+//            book.title = "ハムレット"
+//            book.author = "シェークスピア"
+//            title = book.title!
+//            author = book.author!
+//            
+//            print("タイトル: \(title), 著者名: \(author)")
+//            print("登録された日: \(book.registeredDate!)")
+//        }
         return true
     }
 
