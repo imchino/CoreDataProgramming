@@ -99,3 +99,21 @@ class BookTableViewController: UITableViewController {
     */
 
 }
+
+class BookTableViewCell: UITableViewCell {
+    
+    @IBOutlet weak var titleLabel:  UILabel!
+    @IBOutlet weak var authorLabel: UILabel!
+    @IBOutlet weak var wishLabel:   UILabel!
+    @IBOutlet weak var dateLabel:   UILabel!
+    
+    lazy var dateFormatter: NSDateFormatter = {
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateStyle = .ShortStyle
+        dateFormatter.timeStyle = .MediumStyle
+        return dateFormatter
+    }()
+    
+    
+    
+}
