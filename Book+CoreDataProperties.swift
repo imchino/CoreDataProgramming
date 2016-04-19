@@ -18,6 +18,6 @@ extension Book {
     @NSManaged var author: String?          //著者名
     @NSManaged var registeredDate: NSDate?  //登録日
     @NSManaged var title: String?           //タイトル
-    @NSManaged var wish: NSNumber?          //欲しいもの可否
+    @NSManaged var wish: NSNumber?          //欲しいもの可否（0==False, 0!=True）
 
 }

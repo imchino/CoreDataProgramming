@@ -7,8 +7,12 @@
 //
 
 import UIKit
+import CoreData
 
 class BookTableViewController: UITableViewController {
+    
+    let coreDataStack = CoreDataStack() //CoreDataパッケージ
+    var books = [Book]()                 //データソース
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,6 +22,10 @@ class BookTableViewController: UITableViewController {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+        
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 56.0
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -25,33 +33,34 @@ class BookTableViewController: UITableViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    //新規ブック追加
     @IBAction func addBook(sender: UIBarButtonItem) {
     }
     
+    //全書籍 <-> 欲しいものリスト
     @IBAction func segmentChanged(sender: UISegmentedControl) {
     }
 
     // MARK: - Table view data source
-
+    //セクション数
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
+        return 1
     }
-
+    
+    //セクション内の行数
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
+        return books.count
     }
 
-    /*
+    
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("reuseIdentifier", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCellWithIdentifier("BookCell", forIndexPath: indexPath) as! BookTableViewCell
 
-        // Configure the cell...
+        let book = books[indexPath.row]
+        cell.configureWithBook(book)
 
         return cell
     }
-    */
 
     /*
     // Override to support conditional editing of the table view.
@@ -100,13 +109,16 @@ class BookTableViewController: UITableViewController {
 
 }
 
+//セル
 class BookTableViewCell: UITableViewCell {
     
+    //セルの表示項目
     @IBOutlet weak var titleLabel:  UILabel!
     @IBOutlet weak var authorLabel: UILabel!
     @IBOutlet weak var wishLabel:   UILabel!
     @IBOutlet weak var dateLabel:   UILabel!
     
+    //日付形式を初期化
     lazy var dateFormatter: NSDateFormatter = {
         let dateFormatter = NSDateFormatter()
         dateFormatter.dateStyle = .ShortStyle
@@ -114,6 +126,13 @@ class BookTableViewCell: UITableViewCell {
         return dateFormatter
     }()
     
+    //セルの表示内容
+    func configureWithBook(book: Book) {
+        titleLabel.text = book.title
+        authorLabel.text = book.author
+        wishLabel.hidden = !(book.wish!.boolValue)
+        dateLabel.text = dateFormatter.stringFromDate(book.registeredDate!)
+    }
     
     
 }
