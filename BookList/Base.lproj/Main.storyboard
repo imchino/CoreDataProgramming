@@ -15,7 +15,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="BookCell" rowHeight="56" id="nMs-nD-4JZ">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="BookCell" rowHeight="56" id="nMs-nD-4JZ" customClass="BookTableViewCell" customModule="BookList" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="92" width="600" height="56"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="nMs-nD-4JZ" id="Wgv-Zk-azn">
@@ -31,35 +31,42 @@
                                         <stackView opaque="NO" contentMode="scaleToFill" alignment="bottom" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="SyZ-4v-B5V">
                                             <rect key="frame" x="20" y="33" width="572" height="15"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" misplaced="YES" text="Author" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uTp-ck-8In">
-                                                    <rect key="frame" x="0.0" y="1" width="505" height="15"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="Author" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uTp-ck-8In">
+                                                    <rect key="frame" x="0.0" y="0.0" width="505" height="15"/>
+                                                    <color key="backgroundColor" red="0.0" green="0.50196081400000003" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Wish" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="G4L-Yv-8lK">
-                                                    <rect key="frame" x="513" y="2" width="26" height="14"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Wish" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="G4L-Yv-8lK">
+                                                    <rect key="frame" x="513" y="0.0" width="26" height="15"/>
+                                                    <color key="backgroundColor" red="0.0" green="1" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="11"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Date" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="m5n-A7-pPk">
-                                                    <rect key="frame" x="547" y="2" width="25" height="14"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Date" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="m5n-A7-pPk">
+                                                    <rect key="frame" x="547" y="0.0" width="25" height="15"/>
+                                                    <color key="backgroundColor" red="1" green="0.50196081400000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="11"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstItem="m5n-A7-pPk" firstAttribute="top" secondItem="uTp-ck-8In" secondAttribute="top" id="0N2-Yp-mlw"/>
+                                                <constraint firstItem="G4L-Yv-8lK" firstAttribute="top" secondItem="uTp-ck-8In" secondAttribute="top" id="6yv-VN-SV4"/>
+                                            </constraints>
                                         </stackView>
                                     </subviews>
                                     <constraints>
                                         <constraint firstItem="X7F-vR-uFv" firstAttribute="leading" secondItem="Wgv-Zk-azn" secondAttribute="leadingMargin" constant="12" id="7ef-Fk-ZUJ"/>
-                                        <constraint firstAttribute="trailingMargin" secondItem="SyZ-4v-B5V" secondAttribute="trailing" id="HFB-d0-jc3"/>
+                                        <constraint firstItem="SyZ-4v-B5V" firstAttribute="leading" secondItem="Wgv-Zk-azn" secondAttribute="leadingMargin" constant="12" id="Nd2-ke-fNo"/>
                                         <constraint firstAttribute="trailingMargin" secondItem="X7F-vR-uFv" secondAttribute="trailing" id="SNo-Ma-Dax"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="SyZ-4v-B5V" secondAttribute="trailing" id="VGB-JS-lx0"/>
                                         <constraint firstItem="SyZ-4v-B5V" firstAttribute="top" secondItem="Wgv-Zk-azn" secondAttribute="topMargin" constant="8" id="X1a-hf-4X1"/>
-                                        <constraint firstItem="SyZ-4v-B5V" firstAttribute="leading" secondItem="Wgv-Zk-azn" secondAttribute="leadingMargin" constant="12" id="byf-Zh-sif"/>
-                                        <constraint firstAttribute="bottomMargin" secondItem="SyZ-4v-B5V" secondAttribute="bottom" id="gcc-5X-6UT"/>
-                                        <constraint firstItem="SyZ-4v-B5V" firstAttribute="top" secondItem="X7F-vR-uFv" secondAttribute="bottom" constant="8" id="soF-bw-AfZ"/>
+                                        <constraint firstItem="SyZ-4v-B5V" firstAttribute="top" secondItem="X7F-vR-uFv" secondAttribute="bottom" constant="8" id="kIC-tz-OCc"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="SyZ-4v-B5V" secondAttribute="bottom" id="qpJ-o8-bX2"/>
                                         <constraint firstItem="X7F-vR-uFv" firstAttribute="top" secondItem="Wgv-Zk-azn" secondAttribute="topMargin" id="tLS-aT-OMz"/>
                                     </constraints>
                                     <variation key="default">
@@ -68,6 +75,12 @@
                                         </mask>
                                     </variation>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="authorLabel" destination="uTp-ck-8In" id="8Cu-dA-8rW"/>
+                                    <outlet property="dateLabel" destination="m5n-A7-pPk" id="GIg-Vd-QPI"/>
+                                    <outlet property="titleLabel" destination="X7F-vR-uFv" id="FIE-k8-ldQ"/>
+                                    <outlet property="wishLabel" destination="G4L-Yv-8lK" id="T8k-IZ-ccu"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>

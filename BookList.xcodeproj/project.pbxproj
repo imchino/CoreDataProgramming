@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		A48461741CC0C9A2006FFFA1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48461731CC0C9A2006FFFA1 /* AppDelegate.swift */; };
-		A48461761CC0C9A2006FFFA1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48461751CC0C9A2006FFFA1 /* ViewController.swift */; };
 		A48461791CC0C9A2006FFFA1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A48461771CC0C9A2006FFFA1 /* Main.storyboard */; };
 		A484617B1CC0C9A2006FFFA1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A484617A1CC0C9A2006FFFA1 /* Assets.xcassets */; };
 		A484617E1CC0C9A2006FFFA1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A484617C1CC0C9A2006FFFA1 /* LaunchScreen.storyboard */; };
@@ -41,7 +40,6 @@
 /* Begin PBXFileReference section */
 		A48461701CC0C9A2006FFFA1 /* BookList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BookList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A48461731CC0C9A2006FFFA1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		A48461751CC0C9A2006FFFA1 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		A48461781CC0C9A2006FFFA1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A484617A1CC0C9A2006FFFA1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A484617D1CC0C9A2006FFFA1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -109,7 +107,6 @@
 			children = (
 				A48461731CC0C9A2006FFFA1 /* AppDelegate.swift */,
 				A4A8C7691CC4CD8000DC6196 /* BookTableViewController.swift */,
-				A48461751CC0C9A2006FFFA1 /* ViewController.swift */,
 				A48461A41CC0CEEE006FFFA1 /* CoreDataStack.swift */,
 				A48461A11CC0CEAB006FFFA1 /* BookListModel.xcdatamodeld */,
 				A4A8C7661CC3956500DC6196 /* Book.swift */,
@@ -271,7 +268,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A48461761CC0C9A2006FFFA1 /* ViewController.swift in Sources */,
 				A48461741CC0C9A2006FFFA1 /* AppDelegate.swift in Sources */,
 				A4A8C7681CC3956500DC6196 /* Book.swift in Sources */,
 				A48461A31CC0CEAB006FFFA1 /* BookListModel.xcdatamodeld in Sources */,
