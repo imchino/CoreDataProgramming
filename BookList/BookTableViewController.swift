@@ -13,6 +13,12 @@ class BookTableViewController: UITableViewController {
     
     let coreDataStack = CoreDataStack() //CoreDataパッケージ
     var books = [Book]()                 //データソース
+    
+    //Bookを読み出すフェッチリクエスト
+    lazy var fetchRequestForBooks: NSFetchRequest = {
+        let fetchRequest = NSFetchRequest(entityName: "Book")
+        return fetchRequest
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,12 +36,13 @@ class BookTableViewController: UITableViewController {
         tableView.rowHeight = UITableViewAutomaticDimension //Self-Sizeingセルに対して、高さを自動設定
         tableView.estimatedRowHeight = 56.0                 //セルの基準高さを56ptに指定
         
-        //ストアを追加
+        //コーディネータにストアを接続
         userInterancitonEnabled(false)  //UI待機
         coreDataStack.addPersistentStoreWithCompletionHandler({
             //非同期処理が完了時の処理
             dispatch_async(dispatch_get_main_queue(), {
                 self.userInterancitonEnabled(true)  //UI許可
+                self.fetchBooks()                   //ストアからフェッチ
             })
         })
     }
@@ -52,6 +59,17 @@ class BookTableViewController: UITableViewController {
         
         self.navigationItem.rightBarButtonItem?.enabled = enabled
         self.navigationItem.leftBarButtonItem?.enabled  = enabled
+    }
+    
+    //永続ストアからBookエンティティをフェッチ
+    private func fetchBooks() {
+        do {
+            try books = coreDataStack.context.executeFetchRequest(fetchRequestForBooks) as! [Book]
+        } catch let error as NSError {
+            fatalError("フェッチ失敗: \(error)")
+        }
+        
+        tableView.reloadData()  //テーブルビュー更新
     }
     
     //新規ブック追加（なビケーションバー.右ボタン）
