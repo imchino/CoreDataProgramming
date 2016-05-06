@@ -42,7 +42,7 @@ class BookTableViewController: UITableViewController {
             //非同期処理が完了時の処理
             dispatch_async(dispatch_get_main_queue(), {
                 self.userInterancitonEnabled(true)  //UI許可
-                self.fetchBooks()                   //ストアからフェッチ
+                self.fetchBooks()                   //ストア接続完了したらフェッチ
             })
         })
     }
