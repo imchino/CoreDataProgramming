@@ -58,6 +58,8 @@ class BookTableViewController: UITableViewController {
     @IBAction func addBook(sender: UIBarButtonItem) {
         //コンテキストに追加された、新規Bookオブジェクトを生成する
         let newBook = NSEntityDescription.insertNewObjectForEntityForName("Book", inManagedObjectContext: coreDataStack.context) as! Book
+        newBook.title  = "仮タイトル"    //titleプロパティは必須
+        newBook.author = "不明な著者名"
         
         //データソースの先頭に追加
         books.insert(newBook, atIndex: 0)
@@ -65,13 +67,16 @@ class BookTableViewController: UITableViewController {
         //テーブルを更新する
         let indexPath = NSIndexPath(forRow: 0, inSection: 0)
         tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+        
+        //コンテキスト保存
+        try! coreDataStack.saveContext()
     }
     
     //全書籍 <-> 欲しいものリスト
     @IBAction func segmentChanged(sender: UISegmentedControl) {
     }
 
-    // MARK: - Table view data source
+    // MARK: - テーブルビューのデータソース
     //セクション数
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
@@ -82,7 +87,7 @@ class BookTableViewController: UITableViewController {
         return books.count
     }
 
-    
+    //セル生成
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("BookCell", forIndexPath: indexPath) as! BookTableViewCell
 
@@ -105,6 +110,7 @@ class BookTableViewController: UITableViewController {
             coreDataStack.context.deleteObject(book)    //コンテキストから削除
             books.removeAtIndex(indexPath.row)          //データソースから削除
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)  //テーブルビューから削除
+            try! coreDataStack.saveContext()    //コンテキスト保存
         } else if editingStyle == .Insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
             print("新規追加")
@@ -126,7 +132,7 @@ class BookTableViewController: UITableViewController {
     }
     */
 
-    // MARK: - Navigation
+    // MARK: - ナビゲーション
     //演習モードのとき、新規ブックは追加させない
     override func setEditing(editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: true)
