@@ -4,7 +4,7 @@
 //
 //  Created by chino on 2016/04/17.
 //  Copyright © 2016年 chino. All rights reserved.
-//
+//  Book型モデル（振る舞いを実装する。プロパティは都度、更新されるのでエクステンションに切り分け。）
 
 import Foundation
 import CoreData

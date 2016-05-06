@@ -23,8 +23,17 @@ class BookTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         
-        tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 56.0
+        tableView.rowHeight = UITableViewAutomaticDimension //Self-Sizeingセルに対して、高さを自動設定
+        tableView.estimatedRowHeight = 56.0                 //セルの基準高さを56ptに指定
+        
+        //ストアを追加
+        userInterancitonEnabled(false)  //UI待機
+        coreDataStack.addPersistentStoreWithCompletionHandler({
+            //非同期処理が完了時の処理
+            dispatch_async(dispatch_get_main_queue(), {
+                self.userInterancitonEnabled(true)  //UI許可
+            })
+        })
         
     }
 
@@ -33,8 +42,26 @@ class BookTableViewController: UITableViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    //新規ブック追加
+    //非同期処理が完了するまで、UIを待機させる
+    private func userInterancitonEnabled(enabled: Bool) {
+        let segmentCntrol = self.navigationItem.titleView as! UISegmentedControl
+        segmentCntrol.enabled = enabled
+        
+        self.navigationItem.rightBarButtonItem?.enabled = enabled
+        self.navigationItem.leftBarButtonItem?.enabled  = enabled
+    }
+    
+    //新規ブック追加（なビケーションバー.右ボタン）
     @IBAction func addBook(sender: UIBarButtonItem) {
+        //コンテキストに追加された、新規Bookオブジェクトを生成する
+        let newBook = NSEntityDescription.insertNewObjectForEntityForName("Book", inManagedObjectContext: coreDataStack.context) as! Book
+        
+        //データソースの先頭に追加
+        books.insert(newBook, atIndex: 0)
+        
+        //テーブルを更新する
+        let indexPath = NSIndexPath(forRow: 0, inSection: 0)
+        tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
     }
     
     //全書籍 <-> 欲しいものリスト
