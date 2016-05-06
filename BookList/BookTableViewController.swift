@@ -23,6 +23,10 @@ class BookTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         
+        //ナビゲーションバー初期化
+        self.navigationItem.leftBarButtonItem = editButtonItem()    //左に編集ボタン
+        
+        //テーブルビュー初期化
         tableView.rowHeight = UITableViewAutomaticDimension //Self-Sizeingセルに対して、高さを自動設定
         tableView.estimatedRowHeight = 56.0                 //セルの基準高さを56ptに指定
         
@@ -34,7 +38,6 @@ class BookTableViewController: UITableViewController {
                 self.userInterancitonEnabled(true)  //UI許可
             })
         })
-        
     }
 
     override func didReceiveMemoryWarning() {
@@ -89,25 +92,24 @@ class BookTableViewController: UITableViewController {
         return cell
     }
 
-    /*
-    // Override to support conditional editing of the table view.
+    // テーブルビューを編集可能とする
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         // Return false if you do not want the specified item to be editable.
         return true
     }
-    */
 
-    /*
-    // Override to support editing the table view.
+    // 編集完了時の処理
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
-            // Delete the row from the data source
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+            let book = books[indexPath.row]
+            coreDataStack.context.deleteObject(book)    //コンテキストから削除
+            books.removeAtIndex(indexPath.row)          //データソースから削除
+            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)  //テーブルビューから削除
         } else if editingStyle == .Insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+            print("新規追加")
         }    
     }
-    */
 
     /*
     // Override to support rearranging the table view.
@@ -124,15 +126,18 @@ class BookTableViewController: UITableViewController {
     }
     */
 
-    /*
     // MARK: - Navigation
+    //演習モードのとき、新規ブックは追加させない
+    override func setEditing(editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: true)
+        self.navigationItem.rightBarButtonItem?.enabled = !(editing)
+    }
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
     }
-    */
 
 }
 
