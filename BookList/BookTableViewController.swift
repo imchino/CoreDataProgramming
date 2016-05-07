@@ -16,7 +16,12 @@ class BookTableViewController: UITableViewController {
     
     //Bookを読み出すフェッチリクエスト（lazy: アクセス時に値が決定される）
     lazy var fetchRequestForBooks: NSFetchRequest = {
+        //モデル内のエンティティを指定して、リクエスト生成
         let fetchRequest = NSFetchRequest(entityName: "Book")
+        //結果の並び順を指定
+        let sortDescriptorForBooks = NSSortDescriptor(key: "registeredDate", ascending: false)  //登録日の降順でソート
+        fetchRequest.sortDescriptors = [sortDescriptorForBooks, ]   //リクエストにソート条件をセット
+        
         return fetchRequest
     }()
 
@@ -72,28 +77,6 @@ class BookTableViewController: UITableViewController {
         tableView.reloadData()  //テーブルビュー更新
     }
     
-    //新規ブック追加（ナビケーションバー.右ボタン）
-    @IBAction func addBook(sender: UIBarButtonItem) {
-        //コンテキストに追加された、新規Bookオブジェクトを生成する
-        let newBook = NSEntityDescription.insertNewObjectForEntityForName("Book", inManagedObjectContext: coreDataStack.context) as! Book
-        newBook.title  = "仮タイトル"    //titleプロパティは必須項目
-        newBook.author = "不明な著者名"
-        
-        //データソースの先頭に追加
-        books.insert(newBook, atIndex: 0)
-        
-        //テーブルを更新する
-        let indexPath = NSIndexPath(forRow: 0, inSection: 0)
-        tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-        
-        //コンテキスト保存（ブックを追加 or 削除のタイミングで保存）
-        try! coreDataStack.saveContext()
-    }
-    
-    //全書籍 <-> 欲しいものリスト
-    @IBAction func segmentChanged(sender: UISegmentedControl) {
-    }
-
     // MARK: - テーブルビューのデリゲートメソッド
     //セクション数
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -151,6 +134,37 @@ class BookTableViewController: UITableViewController {
     */
 
     // MARK: - ナビゲーション
+    //新規ブック追加（ナビケーションバー.右ボタン）
+    @IBAction func addBook(sender: UIBarButtonItem) {
+        //コンテキストに追加された、新規Bookオブジェクトを生成する
+        let newBook = NSEntityDescription.insertNewObjectForEntityForName("Book", inManagedObjectContext: coreDataStack.context) as! Book
+        newBook.title  = "仮タイトル"    //titleプロパティは必須項目
+        newBook.author = "不明な著者名"
+        
+        //データソースの先頭に追加
+        books.insert(newBook, atIndex: 0)
+        
+        //テーブルを更新する
+        let indexPath = NSIndexPath(forRow: 0, inSection: 0)
+        tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+        
+        //コンテキスト保存（ブックを追加 or 削除のタイミングで保存）
+        try! coreDataStack.saveContext()
+    }
+    
+    //全書籍 <-> 欲しいものリスト
+    @IBAction func segmentChanged(sender: UISegmentedControl) {
+        var condition:NSPredicate? = nil    //初期条件は無し
+
+        //セグメントが欲しいものリスト選択中のとき
+        if (sender.selectedSegmentIndex == 1) {
+            condition = NSPredicate(format: "wish == true")
+            fetchRequestForBooks.predicate = condition
+        }
+        fetchBooks()    //フェッチ実行
+    }
+    
+
     //演習モードのとき、新規ブックは追加させない
     override func setEditing(editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: true)
