@@ -21,14 +21,14 @@ class CoreDataStack {
         return urls.last!
     }()
     
-    //イニシャライザー
+    //イニシャライザ
     init() {
         //モデルのURL
         let bundle = NSBundle.mainBundle()
-        guard let model_URL = bundle.URLForResource("BookListModel", withExtension: "momd") else { fatalError() }
+        guard let model_URL = bundle.URLForResource("BookListModel", withExtension: "momd") else { fatalError("モデルURL取得エラー") }
         
         //管理オブジェクトモデルを生成
-        guard let model = NSManagedObjectModel(contentsOfURL: model_URL) else { fatalError() }
+        guard let model = NSManagedObjectModel(contentsOfURL: model_URL) else { fatalError("管理オブジェクトモデル生成エラー") }
         
         //コーディネータを生成
         let coordinator = NSPersistentStoreCoordinator(managedObjectModel: model)
@@ -67,7 +67,7 @@ class CoreDataStack {
         })
     }
     
-    //コンテキスト保存
+    //コンテキストを保存
     func saveContext() throws {
         if context.hasChanges {
             do {
