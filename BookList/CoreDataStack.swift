@@ -23,11 +23,10 @@ class CoreDataStack {
     
     //イニシャライザ
     init() {
-        //モデルのURL
+        //Xcodeモデルエディタで作成した管理オブジェクトモデルのURL
         let bundle = NSBundle.mainBundle()
         guard let model_URL = bundle.URLForResource("BookListModel", withExtension: "momd") else { fatalError("モデルURL取得エラー") }
-        
-        //管理オブジェクトモデルを生成
+        //管理オブジェクトモデルのインスタンスを生成
         guard let model = NSManagedObjectModel(contentsOfURL: model_URL) else { fatalError("管理オブジェクトモデル生成エラー") }
         
         //コーディネータを生成
@@ -35,29 +34,30 @@ class CoreDataStack {
         
         //コンテキストを生成
         self.context = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
-
-        //コーディネータと接続
+        //コンテキストのプロパティにコーディネータとセット
         context.persistentStoreCoordinator = coordinator
-        
     }
     
-    //コーディネータにストアを追加する（引数: 完了時の処理）
+    //コーディネータとストアを接続する（引数: 完了時の処理）
     func addPersistentStoreWithCompletionHandler(completionHandler: (()->Void)?) {
         /* 非同期処理 */
         //バックグラウンドキューを生成
         let backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)
         //非同期処理スタート
         dispatch_async(backgroundQueue, {
-            
             //SQLストアのURLを取得
             let directryURL = self.appDocumentDirectryURL
             let storeURL = directryURL.URLByAppendingPathComponent("BookList.sqlite")
+            
+            //軽量マイグレーションのオプション（ディクショナリ型）
+            let options = [NSMigratePersistentStoresAutomaticallyOption: true,  //バンドル内で自動マイグレーション
+                           NSInferMappingModelAutomaticallyOption:       true]  //自動マッピング
             
             do {
             //コーティネータにストアを追加
                 let coordinator = self.context.persistentStoreCoordinator!
                 //返り値(NSPersistentStoreオブジェクト)は保持しない
-                try coordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: storeURL, options: nil)
+                try coordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: storeURL, options: options)
                 //完了時に通知
                 completionHandler?()
                 

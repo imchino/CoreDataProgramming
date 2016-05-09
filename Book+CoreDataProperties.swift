@@ -15,6 +15,7 @@ import CoreData
 extension Book {
 
     //「@NSManaged」キーワード（動的にアクセサが作成される）
+    //モデルをアップデートすると更新されるので、エクステンションする
     @NSManaged var author: String?          //著者名
     @NSManaged var registeredDate: NSDate?  //登録日
     @NSManaged var title: String?           //タイトル

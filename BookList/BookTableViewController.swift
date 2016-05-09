@@ -20,7 +20,7 @@ class BookTableViewController: UITableViewController {
         let fetchRequest = NSFetchRequest(entityName: "Book")
         //結果の並び順を指定
         let sortDescriptorForBooks = NSSortDescriptor(key: "registeredDate", ascending: false)  //登録日の降順でソート
-        fetchRequest.sortDescriptors = [sortDescriptorForBooks, ]   //リクエストにソート条件をセット
+        fetchRequest.sortDescriptors = [sortDescriptorForBooks]   //リクエストにソート条件をセット
         
         return fetchRequest
     }()
@@ -158,9 +158,9 @@ class BookTableViewController: UITableViewController {
 
         //セグメントが欲しいものリスト選択中のとき
         if (sender.selectedSegmentIndex == 1) {
-            condition = NSPredicate(format: "wish == true")
-            fetchRequestForBooks.predicate = condition
+            condition = NSPredicate(format: "wish == true") //絞り込み条件を指定
         }
+        fetchRequestForBooks.predicate = condition  //絞り込み条件をセット
         fetchBooks()    //フェッチ実行
     }
     

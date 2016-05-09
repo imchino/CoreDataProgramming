@@ -9,14 +9,14 @@
 import Foundation
 import CoreData
 
-
+//Bookエンティティのカスタム管理オブジェクト（安全なアクセサを生成する）
 class Book: NSManagedObject {
 
     //コンテキストに最初に登録されたときだけ呼ばれる
     override func awakeFromInsert() {
         super.awakeFromInsert()
         
-        //内部処理にするので、プリミティブアクセス
+        //初期値の設定は内部処理にするので、プリミティブアクセス
         setPrimitiveValue(NSDate(), forKey: "registeredDate")
     }
 
