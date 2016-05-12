@@ -1,5 +1,5 @@
 //
-//  Book+CoreDataProperties.swift
+//  Photo+CoreDataProperties.swift
 //  BookList
 //
 //  Created by chino on 2016/05/11.
@@ -12,14 +12,9 @@
 import Foundation
 import CoreData
 
-extension Book {
+extension Photo {
 
-    @NSManaged var author: String?
-    @NSManaged var registeredDate: NSDate?
-    @NSManaged var title: String?
-    @NSManaged var url: NSURL?
-    @NSManaged var wish: NSNumber?
-    @NSManaged var photo: Photo?
-    @NSManaged var shelf: Shelf?
+    @NSManaged var image: NSData?
+    @NSManaged var book: Book?
 
 }

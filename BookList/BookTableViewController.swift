@@ -140,6 +140,7 @@ class BookTableViewController: UITableViewController {
         let newBook = NSEntityDescription.insertNewObjectForEntityForName("Book", inManagedObjectContext: coreDataStack.context) as! Book
         newBook.title  = "仮タイトル"    //titleプロパティは必須項目
         newBook.author = "不明な著者名"
+        newBook.url = NSURL(string: "http://www.sample.com")
         
         //データソースの先頭に追加
         books.insert(newBook, atIndex: 0)

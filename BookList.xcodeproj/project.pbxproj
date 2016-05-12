@@ -15,7 +15,11 @@
 		A48461941CC0C9A2006FFFA1 /* BookListUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48461931CC0C9A2006FFFA1 /* BookListUITests.swift */; };
 		A48461A31CC0CEAB006FFFA1 /* BookListModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A48461A11CC0CEAB006FFFA1 /* BookListModel.xcdatamodeld */; };
 		A48461A51CC0CEEE006FFFA1 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48461A41CC0CEEE006FFFA1 /* CoreDataStack.swift */; };
-		A4A8C7671CC3956500DC6196 /* Book+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4A8C7651CC3956500DC6196 /* Book+CoreDataProperties.swift */; };
+		A488C7BE1CE339480052711B /* Book+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = A488C7B91CE339480052711B /* Book+CoreDataProperties.swift */; };
+		A488C7BF1CE339480052711B /* Shelf+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = A488C7BA1CE339480052711B /* Shelf+CoreDataProperties.swift */; };
+		A488C7C01CE339480052711B /* Shelf.swift in Sources */ = {isa = PBXBuildFile; fileRef = A488C7BB1CE339480052711B /* Shelf.swift */; };
+		A488C7C11CE339480052711B /* Photo+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = A488C7BC1CE339480052711B /* Photo+CoreDataProperties.swift */; };
+		A488C7C21CE339480052711B /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A488C7BD1CE339480052711B /* Photo.swift */; };
 		A4A8C7681CC3956500DC6196 /* Book.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4A8C7661CC3956500DC6196 /* Book.swift */; };
 		A4A8C76A1CC4CD8000DC6196 /* BookTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4A8C7691CC4CD8000DC6196 /* BookTableViewController.swift */; };
 /* End PBXBuildFile section */
@@ -54,7 +58,11 @@
 		A48461951CC0C9A2006FFFA1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A48461A21CC0CEAB006FFFA1 /* BookListModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = BookListModel.xcdatamodel; sourceTree = "<group>"; };
 		A48461A41CC0CEEE006FFFA1 /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
-		A4A8C7651CC3956500DC6196 /* Book+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Book+CoreDataProperties.swift"; path = "../Book+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		A488C7B91CE339480052711B /* Book+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Book+CoreDataProperties.swift"; path = "../Book+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		A488C7BA1CE339480052711B /* Shelf+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Shelf+CoreDataProperties.swift"; path = "../Shelf+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		A488C7BB1CE339480052711B /* Shelf.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Shelf.swift; path = ../Shelf.swift; sourceTree = "<group>"; };
+		A488C7BC1CE339480052711B /* Photo+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Photo+CoreDataProperties.swift"; path = "../Photo+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		A488C7BD1CE339480052711B /* Photo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Photo.swift; path = ../Photo.swift; sourceTree = "<group>"; };
 		A4A8C7661CC3956500DC6196 /* Book.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Book.swift; path = ../Book.swift; sourceTree = "<group>"; };
 		A4A8C7691CC4CD8000DC6196 /* BookTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -111,7 +119,11 @@
 				A4A8C7691CC4CD8000DC6196 /* BookTableViewController.swift */,
 				A48461A41CC0CEEE006FFFA1 /* CoreDataStack.swift */,
 				A4A8C7661CC3956500DC6196 /* Book.swift */,
-				A4A8C7651CC3956500DC6196 /* Book+CoreDataProperties.swift */,
+				A488C7B91CE339480052711B /* Book+CoreDataProperties.swift */,
+				A488C7BD1CE339480052711B /* Photo.swift */,
+				A488C7BC1CE339480052711B /* Photo+CoreDataProperties.swift */,
+				A488C7BB1CE339480052711B /* Shelf.swift */,
+				A488C7BA1CE339480052711B /* Shelf+CoreDataProperties.swift */,
 				A48461A11CC0CEAB006FFFA1 /* BookListModel.xcdatamodeld */,
 				A48461771CC0C9A2006FFFA1 /* Main.storyboard */,
 				A484617A1CC0C9A2006FFFA1 /* Assets.xcassets */,
@@ -270,11 +282,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A488C7C01CE339480052711B /* Shelf.swift in Sources */,
 				A48461741CC0C9A2006FFFA1 /* AppDelegate.swift in Sources */,
 				A4A8C7681CC3956500DC6196 /* Book.swift in Sources */,
 				A48461A31CC0CEAB006FFFA1 /* BookListModel.xcdatamodeld in Sources */,
-				A4A8C7671CC3956500DC6196 /* Book+CoreDataProperties.swift in Sources */,
 				A48461A51CC0CEEE006FFFA1 /* CoreDataStack.swift in Sources */,
+				A488C7BE1CE339480052711B /* Book+CoreDataProperties.swift in Sources */,
+				A488C7C21CE339480052711B /* Photo.swift in Sources */,
+				A488C7BF1CE339480052711B /* Shelf+CoreDataProperties.swift in Sources */,
+				A488C7C11CE339480052711B /* Photo+CoreDataProperties.swift in Sources */,
 				A4A8C76A1CC4CD8000DC6196 /* BookTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
