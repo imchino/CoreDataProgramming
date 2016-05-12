@@ -21,5 +21,5 @@ extension Book {
     @NSManaged var wish: NSNumber?
     @NSManaged var photo: Photo?
     @NSManaged var shelf: Shelf?
-
+    
 }
