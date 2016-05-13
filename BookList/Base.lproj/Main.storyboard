@@ -114,10 +114,10 @@
             </objects>
             <point key="canvasLocation" x="1452" y="699"/>
         </scene>
-        <!--Table View Controller-->
+        <!--Book Edit Table View Controller-->
         <scene sceneID="TEf-gX-sME">
             <objects>
-                <tableViewController id="1WO-YH-2eh" sceneMemberID="viewController">
+                <tableViewController id="1WO-YH-2eh" customClass="BookEditTableViewController" customModule="BookList" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="46" sectionHeaderHeight="18" sectionFooterHeight="18" id="4c8-jJ-ZMp">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -149,6 +149,9 @@
                                                             <rect key="frame" x="42" y="0.0" width="530" height="30"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                             <textInputTraits key="textInputTraits" returnKeyType="done"/>
+                                                            <connections>
+                                                                <outlet property="delegate" destination="1WO-YH-2eh" id="uUi-8T-8Vj"/>
+                                                            </connections>
                                                         </textField>
                                                     </subviews>
                                                     <constraints>
@@ -190,6 +193,9 @@
                                                             <rect key="frame" x="60" y="0.0" width="512" height="30"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                             <textInputTraits key="textInputTraits" returnKeyType="done"/>
+                                                            <connections>
+                                                                <outlet property="delegate" destination="1WO-YH-2eh" id="m7Y-xX-bDl"/>
+                                                            </connections>
                                                         </textField>
                                                     </subviews>
                                                     <constraints>
@@ -232,6 +238,9 @@
                                                             <rect key="frame" x="41" y="0.0" width="531" height="30"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                             <textInputTraits key="textInputTraits" keyboardType="URL" returnKeyType="done"/>
+                                                            <connections>
+                                                                <outlet property="delegate" destination="1WO-YH-2eh" id="hHw-KR-SCs"/>
+                                                            </connections>
                                                         </textField>
                                                     </subviews>
                                                     <constraints>
@@ -435,6 +444,16 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="kqh-R1-tlB"/>
+                    <connections>
+                        <outlet property="authorTextField" destination="1Bb-1w-1Vy" id="LFL-Uo-K7O"/>
+                        <outlet property="photoImageView" destination="3Kg-GO-nIE" id="jK2-xp-xtB"/>
+                        <outlet property="recentlyLabel" destination="o9h-nY-MYl" id="byp-DV-vcp"/>
+                        <outlet property="registeredDateLabel" destination="yet-KW-hU6" id="Oaw-pB-1fP"/>
+                        <outlet property="shelfNameLabel" destination="iEt-vd-apL" id="jNK-BB-bvB"/>
+                        <outlet property="titleTextField" destination="wr4-Gh-zy6" id="LiL-Oa-7Yz"/>
+                        <outlet property="urlTextField" destination="CLc-MN-3se" id="6Ur-xA-0sC"/>
+                        <outlet property="wishSwitch" destination="tco-iI-qgD" id="kKm-6a-cOv"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8Mb-2r-Eek" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
