@@ -11,7 +11,7 @@
         <relationship name="shelf" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Shelf" inverseName="books" inverseEntity="Shelf" syncable="YES"/>
     </entity>
     <entity name="Photo" representedClassName=".Photo" syncable="YES">
-        <attribute name="image" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="image" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <relationship name="book" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Book" inverseName="photo" inverseEntity="Book" syncable="YES"/>
     </entity>
     <entity name="Shelf" representedClassName=".Shelf" syncable="YES">
@@ -21,7 +21,7 @@
     </entity>
     <elements>
         <element name="Book" positionX="-479" positionY="108" width="128" height="165"/>
-        <element name="Photo" positionX="-200" positionY="270" width="128" height="73"/>
+        <element name="Photo" positionX="-200" positionY="270" width="128" height="75"/>
         <element name="Shelf" positionX="-198" positionY="56" width="128" height="88"/>
     </elements>
 </model>
