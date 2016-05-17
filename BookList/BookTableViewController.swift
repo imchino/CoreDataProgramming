@@ -25,6 +25,8 @@ class BookTableViewController: UITableViewController {
         return fetchRequest
     }()
 
+    
+    // MARK: - ライフサイクル
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -65,6 +67,22 @@ class BookTableViewController: UITableViewController {
         self.navigationItem.rightBarButtonItem?.enabled = enabled
         self.navigationItem.leftBarButtonItem?.enabled  = enabled
     }
+    
+    //画面遷移の直前
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "EDITBOOK" {
+            let tappedCell = sender as! UITableViewCell
+            let indexPath = tableView.indexPathForCell(tappedCell)!
+            let naviVC = segue.destinationViewController as! UINavigationController
+            let editVC = naviVC.topViewController as! BookEditTableViewController
+            
+            editVC.book = self.books[indexPath.row]
+            editVC.coreDataStack = self.coreDataStack
+        }
+    }
+    
+
+    
     
     //永続ストアからBookエンティティをフェッチ実行（結果は、books配列に格納される）
     private func fetchBooks() {
@@ -172,11 +190,6 @@ class BookTableViewController: UITableViewController {
         self.navigationItem.rightBarButtonItem?.enabled = !(editing)
     }
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
 
 }
 
