@@ -12,19 +12,21 @@ import CoreData
 //Bookエンティティのカスタム管理オブジェクト（安全なアクセサを生成する）
 class Book: NSManagedObject {
     
+    /* recentlyは、メモリ上でのみ有効なアトリビュート（Transient）
+       Transientなアトリビュートは、モデルバージョニングが不要
+       エクステンション更新すると、プロパティが重複するので注意！ */
     var recently: Bool? {
-        //登録日が一ヶ月以内であれば、Trueを返す
-        var isRecetly = false
         let calendar = NSCalendar.currentCalendar() //カレンダーユニット
         let aMonthAgo = calendar.dateByAddingUnit(.Month, value: -1, toDate: NSDate(), options: .WrapComponents)!   //一ヶ月前の日時
         let registeredDate = primitiveValueForKey("registeredDate") as! NSDate  //登録された日（内部アクセスなので、プリミティブなゲッタ）
         
-        //「登録日 > 一ヶ月前」ならば Ture
-        let Recently = calendar.compareDate(registeredDate, toDate: aMonthAgo, toUnitGranularity: .Day) == .OrderedDescending
-        if Recently {
+        // 初期値は falseを返す
+        var isRecetly = false
+        //「登録日 > 一ヶ月前」ならば ture
+        let inOneMonth = calendar.compareDate(registeredDate, toDate: aMonthAgo, toUnitGranularity: .Day) == .OrderedDescending
+        if inOneMonth {
             isRecetly = true
         }
-        
         return isRecetly
     }
 
