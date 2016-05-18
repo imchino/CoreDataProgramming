@@ -9,7 +9,9 @@
 import UIKit
 import CoreData
 
-class BookEditTableViewController: UITableViewController {
+class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
+                                                          UIImagePickerControllerDelegate,
+                                                          UINavigationControllerDelegate {
 
     // MARK: - プロパティ
     @IBOutlet weak var titleTextField: UITextField!
@@ -39,13 +41,13 @@ class BookEditTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //各セルの初期値
         titleTextField.text = book.title
         authorTextField.text = book.author
         urlTextField.text = book.url?.absoluteString    //URLの絶対パス（Bookエンティティのオプショナルなアトリビュート）
         wishSwitch.on = book.wish!.boolValue            //必須アトリビュートなので、オプショナルチェインは「!」
         registeredDateLabel.text = dateFormatter.stringFromDate(book.registeredDate!)
-        
-        recentlyLabel.hidden = book.recently!.boolValue
+        recentlyLabel.hidden = book.recently!.boolValue //bookオブジェクト側で、内部アクセスして判断
         
         if let imageData = book.photo?.image {
         //bookエンティティ.photoリレーション先のPhontoエンティティ.imageアトリビュートがある場合
@@ -71,7 +73,72 @@ class BookEditTableViewController: UITableViewController {
     }
 
     // MARK: - メソッド
-
+    @IBAction func wishChange(sender: UISwitch) {
+        book.wish = sender.on
+    }
+    
+    // MARK: - デリゲートメソッド
+    //セル選択時
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if indexPath.section == 1 {
+            let imagePC = UIImagePickerController()
+            imagePC.delegate = self
+            presentViewController(imagePC, animated: true, completion: nil)
+        }
+    }
+    
+    //テキスト編集完了時
+    func textFieldDidEndEditing(textField: UITextField) {
+        switch textField {
+        case titleTextField:
+            book.title = textField.text
+        case authorTextField:
+            book.author = textField.text
+        case urlTextField:
+            if let urlText = textField.text {
+                book.url = NSURL(string: urlText)
+            } else {
+                book.url = nil
+            }
+        default:
+            break
+        }
+    }
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    //イメージ選択時
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
+        /* ビューの更新 */
+        photoImageView.image = image
+        
+        /* 管理オブジェクトの更新 */
+        if let photo = book.photo {
+        //bookオブジェクトのphotoリレーションが存在している
+        //（-> リレーション先のプロパティに選択したイメージを格納する）
+            photo.image = UIImageJPEGRepresentation(image, 1.0) //リレーション先のイメージ属性を更新
+        } else {
+        //bookオブジェクトのphotoリレーションがない
+        //（-> 新しいphotoオブジェクトをコンテキスト上に生成して、bookのリレーション先にする）
+            let newEntity = NSEntityDescription.insertNewObjectForEntityForName("Photo", inManagedObjectContext: coreDataStack.context)
+            //新しいPhotoエンティティをコンテキストに挿入
+            let newPhotoObj = newEntity as! Photo   //新しいPhoto管理オブジェクト（プロパティはカラ）
+            newPhotoObj.image = UIImageJPEGRepresentation(image, 1.0)   //Photoオブジェクトのimageプロパティに選択イメージを保持
+            book.photo = newPhotoObj    //Photoオブジェクトをbookオブジェクトのリレーション先にする
+        }
+        
+        picker.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    //ピッカーキャンセル時
+    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        picker.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    
     // MARK: - Navigation
     @IBAction func cancel(sender: UIBarButtonItem) {
         dismissViewControllerAnimated(true, completion: nil)
@@ -80,7 +147,6 @@ class BookEditTableViewController: UITableViewController {
     @IBAction func done(sender: UIBarButtonItem) {
         dismissViewControllerAnimated(true, completion: nil)
     }
-     
      
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation

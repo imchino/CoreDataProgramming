@@ -280,6 +280,9 @@
                                                         </label>
                                                         <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tco-iI-qgD">
                                                             <rect key="frame" x="523" y="0.0" width="51" height="30"/>
+                                                            <connections>
+                                                                <action selector="wishChange:" destination="1WO-YH-2eh" eventType="valueChanged" id="QSh-DH-cL1"/>
+                                                            </connections>
                                                         </switch>
                                                     </subviews>
                                                     <constraints>
