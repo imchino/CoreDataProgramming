@@ -24,6 +24,8 @@ class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
     @IBOutlet weak var photoImageView: UIImageView!
     @IBOutlet weak var shelfNameLabel: UILabel!
     
+    weak var editingTextFeild: UITextField? //編集中のテキストフィールドを保持する
+    
     /* BookTableVCから受け取るプロパティ */
     var book: Book!
     var coreDataStack: CoreDataStack!
@@ -87,8 +89,17 @@ class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
         }
     }
     
-    //テキスト編集完了時
+    //テキスト編集を開始（テキストフィールドを取得）
+    func textFieldDidBeginEditing(textField: UITextField) {
+        editingTextFeild = textField
+        print("テキスト編集スタート")
+    }
+    
+    //テキスト編集が完了した時
     func textFieldDidEndEditing(textField: UITextField) {
+        print("テキスト編集が完了！")
+        editingTextFeild = nil  //取得したテキストフィールドを破棄
+        
         switch textField {
         case titleTextField:
             book.title = textField.text
@@ -140,12 +151,32 @@ class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
     
     
     // MARK: - Navigation
+    //bookの編集をキャンセル（コンテキストを保存しない）
     @IBAction func cancel(sender: UIBarButtonItem) {
         dismissViewControllerAnimated(true, completion: nil)
     }
     
+    //bookの編集を完了（コンテキストを保存する）
     @IBAction func done(sender: UIBarButtonItem) {
-        dismissViewControllerAnimated(true, completion: nil)
+        
+        editingTextFeild?.resignFirstResponder()    //キーボード収納（テキスト編集が完了の処理が呼ばれる）
+        
+        do {
+        //コンテキスト保存して、一覧画面へ
+            try coreDataStack.saveContext()
+            dismissViewControllerAnimated(true, completion: nil)
+
+        } catch let error as NSError {
+        //アラート表示
+            let alert = UIAlertController(title: error.localizedDescription, message: error.localizedRecoverySuggestion, preferredStyle: .Alert)
+            let okAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+            alert.addAction(okAction)
+            presentViewController(alert, animated: true, completion: nil)
+        }
+        
+        
+        
+        
     }
      
 
