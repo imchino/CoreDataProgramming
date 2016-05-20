@@ -9,8 +9,10 @@
 import UIKit
 import CoreData
 
+// MARK: - BookTableViewControllerクラス
 class BookTableViewController: UITableViewController {
     
+    // MARK: -　メンバ
     let coreDataStack = CoreDataStack() //CoreDataパッケージ
     var books = [Book]()                 //データソース（フェッチ結果が格納される）
     
@@ -52,6 +54,10 @@ class BookTableViewController: UITableViewController {
                 self.fetchBooks()                   //ストア接続完了したらフェッチ
             })
         })
+        
+        //オブザーバに登録
+        let nc = NSNotificationCenter.defaultCenter()
+        nc.addObserver(self, selector: Selector.contextDidSave , name: NSManagedObjectContextDidSaveNotification, object: coreDataStack.context)
     }
 
     override func didReceiveMemoryWarning() {
@@ -82,8 +88,7 @@ class BookTableViewController: UITableViewController {
     }
     
 
-    
-    
+    // MARK: - 各種メソッド
     //永続ストアからBookエンティティをフェッチ実行（結果は、books配列に格納される）
     private func fetchBooks() {
         do {
@@ -94,6 +99,30 @@ class BookTableViewController: UITableViewController {
         
         tableView.reloadData()  //テーブルビュー更新
     }
+    
+    //コンテキスト保存（引数: 受けた通知）
+    func contextDidSave(notification: NSNotification) {
+        //通知内容がnilなら終了
+        guard let userinfo = notification.userInfo else {
+            return
+        }
+        
+        //UIを更新する処理
+        let updatedObjects = userinfo[NSUpdatedObjectsKey] as! NSSet    //更新されたオブジェクト集合
+        for object in updatedObjects {
+        //取得した通知内容がbookオブジェクトならば、当該セルを更新
+            let managedObj = object as! NSManagedObject
+            if managedObj.entity.name == "Book" {
+                let book = object as! Book
+                if let index = books.indexOf(book) {
+                    let indexPath = NSIndexPath(forRow: index, inSection: 0)
+                    tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+                }
+            }
+        }
+        
+    }
+    
     
     // MARK: - テーブルビューのデリゲートメソッド
     //セクション数
@@ -193,7 +222,12 @@ class BookTableViewController: UITableViewController {
 
 }
 
-//セル
+// MARK: - セレクタエクステンション
+private extension Selector {
+    static let contextDidSave = #selector(BookTableViewController.contextDidSave(_:))
+}
+
+// MARK: - セル
 class BookTableViewCell: UITableViewCell {
     
     //セルの表示項目
