@@ -100,6 +100,7 @@ class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
         print("テキスト編集が完了！")
         editingTextFeild = nil  //取得したテキストフィールドを破棄
         
+        //編集中のビューを、管理オブジェクトと一致させる
         switch textField {
         case titleTextField:
             book.title = textField.text

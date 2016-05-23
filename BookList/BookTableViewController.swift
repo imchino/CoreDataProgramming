@@ -32,12 +32,6 @@ class BookTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
-        
         //ナビゲーションバー初期化
         self.navigationItem.leftBarButtonItem = editButtonItem()    //左に編集ボタン
         
@@ -58,6 +52,12 @@ class BookTableViewController: UITableViewController {
         //オブザーバに登録
         let nc = NSNotificationCenter.defaultCenter()
         nc.addObserver(self, selector: Selector.contextDidSave , name: NSManagedObjectContextDidSaveNotification, object: coreDataStack.context)
+    }
+    
+    
+    //デイニシャライザ（オブザーバを削除）
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
 
     override func didReceiveMemoryWarning() {
@@ -100,7 +100,7 @@ class BookTableViewController: UITableViewController {
         tableView.reloadData()  //テーブルビュー更新
     }
     
-    //コンテキスト保存（引数: 受けた通知）
+    //コンテキストを保存するオブザーバのセレクタ（引数: 受けた通知）
     func contextDidSave(notification: NSNotification) {
         //通知内容がnilなら終了
         guard let userinfo = notification.userInfo else {
@@ -108,19 +108,24 @@ class BookTableViewController: UITableViewController {
         }
         
         //UIを更新する処理
-        let updatedObjects = userinfo[NSUpdatedObjectsKey] as! NSSet    //更新されたオブジェクト集合
-        for object in updatedObjects {
+        let updatedObjects = userinfo[NSUpdatedObjectsKey] as! NSSet    //通知内容から、コンテキスト上で更新された全ての型の管理オブジェクトを抽出（集合に変換）
+        
         //取得した通知内容がbookオブジェクトならば、当該セルを更新
-            let managedObj = object as! NSManagedObject
-            if managedObj.entity.name == "Book" {
-                let book = object as! Book
-                if let index = books.indexOf(book) {
-                    let indexPath = NSIndexPath(forRow: index, inSection: 0)
-                    tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-                }
+        for object in updatedObjects {
+            let entityName = (object as! NSManagedObject).entity.name   //取得したオブジェクトのエンティティ名
+            let book: Book  //Book型オブジェクトを用意
+
+            //集合から取り出したオブジェクトをBook型にする
+            if entityName == "Book" {
+                book = object as! Book
+            } else { continue }
+            
+            //該当するBooks配列の要素を特定し、テーブルのセルを更新
+            if let index = books.indexOf(book) {
+                let indexPath = NSIndexPath(forRow: index, inSection: 0)
+                tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
             }
         }
-        
     }
     
     
