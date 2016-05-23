@@ -49,7 +49,7 @@ class BookTableViewController: UITableViewController {
             })
         })
         
-        //オブザーバに登録
+        //オブザーバに登録（コンテキストが保存されたときを監視）
         let nc = NSNotificationCenter.defaultCenter()
         nc.addObserver(self, selector: Selector.contextDidSave , name: NSManagedObjectContextDidSaveNotification, object: coreDataStack.context)
     }
@@ -76,13 +76,22 @@ class BookTableViewController: UITableViewController {
     
     //画面遷移の直前
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == "EDITBOOK" {
-            let tappedCell = sender as! UITableViewCell
-            let indexPath = tableView.indexPathForCell(tappedCell)!
+        if segue.identifier == SegueIdentifier.editBook {
+            var sendBook: Book  //渡すbookオブジェクト
+            if let tappedCell = sender as? UITableViewCell {
+            //セルタップからの遷移なら
+                let indexPath = tableView.indexPathForCell(tappedCell)!
+                sendBook = self.books[indexPath.row]
+            } else {
+            //新規ブック作成（＋ボタンをタップ）なら、コンテキスト上のbookを渡す
+                let newBookOnContext = coreDataStack.context.insertedObjects.first as! Book
+                sendBook = newBookOnContext
+            }
+            
+            //遷移先のプロパティを取得して、プロパティを渡す
             let naviVC = segue.destinationViewController as! UINavigationController
             let editVC = naviVC.topViewController as! BookEditTableViewController
-            
-            editVC.book = self.books[indexPath.row]
+            editVC.book = sendBook
             editVC.coreDataStack = self.coreDataStack
         }
     }
@@ -100,23 +109,25 @@ class BookTableViewController: UITableViewController {
         tableView.reloadData()  //テーブルビュー更新
     }
     
-    //コンテキストを保存するオブザーバのセレクタ（引数: 受けた通知）
+    //UIを更新するため、コンテキスト保存を監視するオブザーバのセレクタ（引数: 受けた通知）
     func contextDidSave(notification: NSNotification) {
+        print("オブザーバ通知: コンテキストが更新されたので、保存します！")
         //通知内容がnilなら終了
         guard let userinfo = notification.userInfo else {
             return
         }
         
         //UIを更新する処理
-        let updatedObjects = userinfo[NSUpdatedObjectsKey] as! NSSet    //通知内容から、コンテキスト上で更新された全ての型の管理オブジェクトを抽出（集合に変換）
         
-        //取得した通知内容がbookオブジェクトならば、当該セルを更新
+        //取得した通知内容から更新されたbookオブジェクトを取得して、当該セルを更新
+        let updatedObjects = userinfo[NSUpdatedObjectsKey] as! NSSet    //通知内容から、コンテキスト上で更新された全ての型の管理オブジェクトを抽出（集合に変換）
         for object in updatedObjects {
+            print("アップデートされたオブジェクトを取得！")
             let entityName = (object as! NSManagedObject).entity.name   //取得したオブジェクトのエンティティ名
             let book: Book  //Book型オブジェクトを用意
 
             //集合から取り出したオブジェクトをBook型にする
-            if entityName == "Book" {
+            if entityName == EntityName.book {
                 book = object as! Book
             } else { continue }
             
@@ -126,6 +137,29 @@ class BookTableViewController: UITableViewController {
                 tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
             }
         }
+        
+        //取得した通知内容から挿入されたbookオブジェクトを取得して、テーブルと当該セルを更新
+        let insertedObjects = userinfo[NSInsertedObjectsKey] as! NSSet    //通知内容から、コンテキスト上で挿入された全ての型の管理オブジェクトを抽出（集合に変換）
+        for object in insertedObjects {
+            print("新規追加されたオブジェクトを取得！")
+            let entityName = (object as! NSManagedObject).entity.name   //取得したオブジェクトのエンティティ名
+            let book: Book  //Book型オブジェクトを用意
+            
+            //集合から取り出したオブジェクトをBook型にする
+            if entityName == EntityName.book {
+                book = object as! Book
+            } else { continue }
+            
+            //テーブルのデータソースを更新（新規作成時は先頭に追加）
+            books.insert(book, atIndex: 0)
+            
+            //該当するBooks配列の要素を特定し、テーブルのセルを挿入
+            if let index = books.indexOf(book) {
+                let indexPath = NSIndexPath(forRow: index, inSection: 0)
+                tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+            }
+        }
+
     }
     
     
@@ -188,21 +222,24 @@ class BookTableViewController: UITableViewController {
     // MARK: - ナビゲーション
     //新規ブック追加（ナビケーションバー.右ボタン）
     @IBAction func addBook(sender: UIBarButtonItem) {
-        //コンテキストに追加された、新規Bookオブジェクトを生成する
-        let newBook = NSEntityDescription.insertNewObjectForEntityForName("Book", inManagedObjectContext: coreDataStack.context) as! Book
-        newBook.title  = "仮タイトル"    //titleプロパティは必須項目
-        newBook.author = "不明な著者名"
-        newBook.url = NSURL(string: "http://www.sample.com")
         
-        //データソースの先頭に追加
-        books.insert(newBook, atIndex: 0)
+        //空の管理オブジェクトをコンテキストに生成して、編集画面へ遷移
+        NSEntityDescription.insertNewObjectForEntityForName(EntityName.book, inManagedObjectContext: coreDataStack.context)
+        performSegueWithIdentifier(SegueIdentifier.editBook, sender: nil)   //senderは「nil」なので、通常の遷移とは別あつかい
         
-        //テーブルを更新する
-        let indexPath = NSIndexPath(forRow: 0, inSection: 0)
-        tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-        
-        //コンテキスト保存（ブックを追加 or 削除のタイミングで保存）
-        try! coreDataStack.saveContext()
+//        /* 新規セルとしてオブジェクトを追加するテスト */
+//        //コンテキストに追加された、新規Bookオブジェクトを生成し、データソースの先頭に追加
+//        let newBook = NSEntityDescription.insertNewObjectForEntityForName("Book", inManagedObjectContext: coreDataStack.context) as! Book
+//        newBook.title  = "仮タイトル"    //titleプロパティは必須項目
+//        newBook.author = "不明な著者名"
+//        newBook.url = NSURL(string: "http://www.sample.com")
+//        books.insert(newBook, atIndex: 0)
+//        
+//        //テーブルを更新する
+//        //コンテキスト保存（ブックを追加 or 削除のタイミングで保存）
+//        let indexPath = NSIndexPath(forRow: 0, inSection: 0)
+//        tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+//        try! coreDataStack.saveContext()
     }
     
     //全書籍 <-> 欲しいものリスト
@@ -249,13 +286,20 @@ class BookTableViewCell: UITableViewCell {
         return dateFormatter
     }()
     
-    //セルに表示する内容をセット
+    //管理オブジェクトの値をセルにセット
     func configureWithBook(book: Book) {
         titleLabel.text = book.title
         authorLabel.text = book.author
         wishLabel.hidden = !(book.wish!.boolValue)
         dateLabel.text = dateFormatter.stringFromDate(book.registeredDate!)
     }
-    
-    
+}
+
+struct EntityName {
+    static let book = "Book"
+    static let photo = "Photo"
+}
+
+struct SegueIdentifier {
+    static let editBook = "EDITBOOK"
 }
