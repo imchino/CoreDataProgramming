@@ -295,11 +295,13 @@ class BookTableViewCell: UITableViewCell {
     }
 }
 
+//管理オブジェクトのエンティティ名
 struct EntityName {
     static let book = "Book"
     static let photo = "Photo"
 }
 
+//セグエの識別子
 struct SegueIdentifier {
     static let editBook = "EDITBOOK"
 }
