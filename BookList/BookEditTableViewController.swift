@@ -154,13 +154,17 @@ class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
     // MARK: - Navigation
     //bookの編集をキャンセル（コンテキストを保存しない）
     @IBAction func cancel(sender: UIBarButtonItem) {
-        dismissViewControllerAnimated(true, completion: nil)
+        
+        editingTextFeild?.resignFirstResponder()    //キーボード収納（テキスト編集完了の処理 => コンテキストの状態を同期）
+        coreDataStack.context.rollback()            //コンテキストの状態を（前回の保存、フェッチ時点に）戻す
+        
+        dismissViewControllerAnimated(true, completion: nil)    //画面を一覧表示へ
     }
     
     //bookの編集を完了（コンテキストを保存する）
     @IBAction func done(sender: UIBarButtonItem) {
         
-        editingTextFeild?.resignFirstResponder()    //キーボード収納（テキスト編集が完了の処理が呼ばれる）
+        editingTextFeild?.resignFirstResponder()    //キーボード収納（テキスト編集完了の処理 => コンテキストの状態を同期）
         
         do {
         //コンテキスト保存して、一覧画面へ
