@@ -37,5 +37,46 @@ class Book: NSManagedObject {
         //初期値の設定は内部処理にするので、プリミティブアクセス
         setPrimitiveValue(NSDate(), forKey: "registeredDate")
     }
+    
+    
+    //MARK: - エラーを検証するカスタム検証メソッド
+    //Titleアトリビュートを検証する
+    func validateTitle(value: AutoreleasingUnsafeMutablePointer<AnyObject?>) throws {
 
+        //タイトルがnil => Core Dataが自動チェック
+        if value == nil || value.memory == nil {
+            print("タイトルがnil　=> システムチェックを利用")
+            return
+        }
+        
+        //タイトルがカラ => Core Dataで自動チェック
+        let title = value.memory as! String
+        if title.isEmpty {
+            print("タイトルがカラ　=> システムチェックを利用")
+            return
+        }
+        
+        //スペース除去後のタイトルが、カラでなければOK
+        let whitespace = NSCharacterSet.whitespaceCharacterSet()
+        let trimmedTitle = title.stringByTrimmingCharactersInSet(whitespace)
+        if !(trimmedTitle.isEmpty) {
+            print("タイトルは正しく入力済み")
+            return
+        }
+        
+        //ここまで到達したら、エラーを生成して返す
+        let userInfoWithTitle = [NSLocalizedDescriptionKey: "タイトル未入力" ,
+                                 NSLocalizedRecoverySuggestionErrorKey: "スペースだけのタイトルは無効です"]
+        let errorInvalidTitle = NSError(domain: kBookListErrorDomain,
+                                        code: BookErrorCode.InvalidTitle.rawValue,
+                                        userInfo: userInfoWithTitle)
+        throw errorInvalidTitle
+    }
+    
+}
+
+// MARK: - エラードメイン
+let kBookListErrorDomain = "com.playground.BookList.errorDomain"
+enum BookErrorCode: Int {
+    case InvalidTitle = 1001
 }
