@@ -66,17 +66,21 @@ class Book: NSManagedObject {
     //MARK: - エラーを検証するカスタム検証メソッド
     //独自の検証処理（お気に入りならば、URL必須）
     func validateUrlAndWish() throws {
+        print("カスタム検証: URLチェック")
         if !(wish!.boolValue) {
         //お気に入りでなければ、検証終了
+        print("お気に入りではありません")
             return
         }
         
         if let urlString = url?.absoluteString where !(urlString).isEmpty {
         //URL文字列がnilでなければ、検証終了
+            print("URLは入力済み")
             return
         }
         
         //ここまで到達したら、カスタム検証でエラーをスロー
+        print("カスタム検証でエラー: お気に入りに対して、URLが未入力！")
         let userInfoWithUrl = [NSLocalizedDescriptionKey: "URLが未入力",
                                NSLocalizedRecoverySuggestionErrorKey :"お気に入りにはURLが必須です"]
         let errorInvalidURL = NSError(domain: kBookListErrorDomain, code: BookErrorCode.NoUrl.rawValue, userInfo: userInfoWithUrl)
@@ -96,10 +100,10 @@ class Book: NSManagedObject {
         
         //タイトルがカラ => Core Dataで自動チェック
         let title = value.memory as! String
-        if title.isEmpty {
-            print("タイトルがカラ　=> システムチェックを利用")
-            return
-        }
+//        if title.isEmpty {
+//            print("タイトルがカラ　=> システムチェックを利用")
+//            return
+//        }
         
         //スペース除去後のタイトルが、カラでなければOK
         let whitespace = NSCharacterSet.whitespaceCharacterSet()
@@ -110,7 +114,7 @@ class Book: NSManagedObject {
         }
         
         //ここまで到達したら、エラーを生成してスロー
-        print("カスタム検証でエラーを確認！")
+        print("カスタム検証でエラー: タイトル未入力！")
         let userInfoWithTitle = [NSLocalizedDescriptionKey: "タイトル未入力" ,
                                  NSLocalizedRecoverySuggestionErrorKey: "スペースだけのタイトルは無効です"]
         let errorInvalidTitle = NSError(domain: kBookListErrorDomain,

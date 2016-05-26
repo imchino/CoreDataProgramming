@@ -43,7 +43,7 @@ class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //各セルの初期値
+        /* 各セルの初期値 */
         titleTextField.text = book.title
         authorTextField.text = book.author
         urlTextField.text = book.url?.absoluteString    //URLの絶対パス（Bookエンティティのオプショナルなアトリビュート）
@@ -66,7 +66,6 @@ class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
             self.title = "Edit Book"
         }
         
-        
     }
 
     override func didReceiveMemoryWarning() {
@@ -80,7 +79,7 @@ class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
     }
     
     // MARK: - デリゲートメソッド
-    //セル選択時
+    //PHOTOセルをタップしたときに画面遷移する
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if indexPath.section == 1 {
             let imagePC = UIImagePickerController()
@@ -92,12 +91,12 @@ class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
     //テキスト編集を開始（テキストフィールドを取得）
     func textFieldDidBeginEditing(textField: UITextField) {
         editingTextFeild = textField
-        print("テキスト編集スタート")
+        print("キーボードを展開！")
     }
     
-    //テキスト編集が完了した時
+    //キーボードが格納されたとき（テキスト編集が完了した時）
     func textFieldDidEndEditing(textField: UITextField) {
-        print("テキスト編集が完了！")
+        print("キーボードを収納しました！")
         editingTextFeild = nil  //取得したテキストフィールドを破棄
         
         //編集中のビューを、管理オブジェクトと一致させる
@@ -117,14 +116,15 @@ class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
         }
     }
     
+    //リターンキーでキーボードを格納する
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
     
-    //イメージ選択時
+    //遷移先のイメージピッカーで画像を選択した時
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
-        /* ビューの更新 */
+        /* セル内のビューの更新 */
         photoImageView.image = image
         
         /* 管理オブジェクトの更新 */
@@ -167,13 +167,35 @@ class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
         editingTextFeild?.resignFirstResponder()    //キーボード収納（テキスト編集完了の処理 => コンテキストの状態を同期）
         
         do {
-        //コンテキスト保存して、一覧画面へ
+            /* コンテキスト保存して、一覧画面へ */
             try coreDataStack.saveContext()
             dismissViewControllerAnimated(true, completion: nil)
 
         } catch let error as NSError {
-        //アラート表示
-            let alert = UIAlertController(title: error.localizedDescription, message: error.localizedRecoverySuggestion, preferredStyle: .Alert)
+            /* エラーを解析して、アラート表示 */
+            var validationError: NSError
+            
+            if error.code == NSValidationMultipleErrorsError {
+            //複合エラーだった場合
+                let errors = error.userInfo[NSDetailedErrorsKey] as! [NSError]  //エラー情報の配列を取得
+                validationError = errors.first! //先頭のエラーをデフォルトに設定
+                for errorObj in errors {
+                    if errorObj.domain == kBookListErrorDomain {
+                    //独自エラードメインなら
+                        //エラーを取得して、ループから脱出
+                        validationError = errorObj
+                        break
+                    }
+                }
+            } else {
+            //単一エラーだった場合
+                validationError = error
+            }
+            
+            //アラート表示
+            let alert = UIAlertController(title: validationError.localizedDescription,
+                                          message: validationError.localizedRecoverySuggestion,
+                                          preferredStyle: .Alert)
             let okAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
             alert.addAction(okAction)
             presentViewController(alert, animated: true, completion: nil)
