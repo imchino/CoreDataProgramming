@@ -193,11 +193,13 @@ class BookTableViewController: UITableViewController {
     // 編集完了時の処理
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
+        //セルが削除された場合
             let book = books[indexPath.row]
             coreDataStack.context.deleteObject(book)    //コンテキストから削除
+            print("コンテキストから削除されたオブジェクト: \(coreDataStack.context.deletedObjects)")
             books.removeAtIndex(indexPath.row)          //データソースから削除
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)  //テーブルビューから削除
-            try! coreDataStack.saveContext()    //コンテキスト保存（ブックを追加 or 削除のタイミングで保存）
+            try! coreDataStack.saveContext()    //コンテキスト保存（ブックを追加 or 削除のタイミングで保存） => システム検証メソッド: Delete
         } else if editingStyle == .Insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
             print("新規追加")

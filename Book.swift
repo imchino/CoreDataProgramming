@@ -33,13 +33,58 @@ class Book: NSManagedObject {
     //コンテキストに最初に登録されたときだけ呼ばれる
     override func awakeFromInsert() {
         super.awakeFromInsert()
-        
+        print("Bookオブジェクトのライフサイクル: コンテキストに追加されました")
         //初期値の設定は内部処理にするので、プリミティブアクセス
         setPrimitiveValue(NSDate(), forKey: "registeredDate")
     }
     
+    //MARK: - エラーを検証するCoreData標準の検証メソッド
+    //オブジェクトを追加したときに呼ばれる
+    override func validateForInsert() throws {
+        print("検証メソッド: Insert")
+        try super.validateForInsert()
+        
+        try validateUrlAndWish()
+    }
+    
+    //更新したときに呼ばれる
+    override func validateForUpdate() throws {
+        print("検証メソッド: Update")
+        try super.validateForUpdate()   //まずは、標準の検証をする
+
+        //続いて、独自の検証
+        try validateUrlAndWish()
+    }
+    
+    //テーブルからセルを削除した瞬間に呼ばれる
+    override func validateForDelete() throws {
+        print("検証メソッド: Delete")
+        try super.validateForInsert()   //まずは、標準の検証をする
+        
+    }
     
     //MARK: - エラーを検証するカスタム検証メソッド
+    //独自の検証処理（お気に入りならば、URL必須）
+    func validateUrlAndWish() throws {
+        if !(wish!.boolValue) {
+        //お気に入りでなければ、検証終了
+            return
+        }
+        
+        if let urlString = url?.absoluteString where !(urlString).isEmpty {
+        //URL文字列がnilでなければ、検証終了
+            return
+        }
+        
+        //ここまで到達したら、カスタム検証でエラーをスロー
+        let userInfoWithUrl = [NSLocalizedDescriptionKey: "URLが未入力",
+                               NSLocalizedRecoverySuggestionErrorKey :"お気に入りにはURLが必須です"]
+        let errorInvalidURL = NSError(domain: kBookListErrorDomain, code: BookErrorCode.NoUrl.rawValue, userInfo: userInfoWithUrl)
+        
+        throw errorInvalidURL
+    }
+    
+    
     //Titleアトリビュートを検証する
     func validateTitle(value: AutoreleasingUnsafeMutablePointer<AnyObject?>) throws {
 
@@ -64,7 +109,8 @@ class Book: NSManagedObject {
             return
         }
         
-        //ここまで到達したら、エラーを生成して返す
+        //ここまで到達したら、エラーを生成してスロー
+        print("カスタム検証でエラーを確認！")
         let userInfoWithTitle = [NSLocalizedDescriptionKey: "タイトル未入力" ,
                                  NSLocalizedRecoverySuggestionErrorKey: "スペースだけのタイトルは無効です"]
         let errorInvalidTitle = NSError(domain: kBookListErrorDomain,
@@ -79,4 +125,5 @@ class Book: NSManagedObject {
 let kBookListErrorDomain = "com.playground.BookList.errorDomain"
 enum BookErrorCode: Int {
     case InvalidTitle = 1001
+    case NoUrl        = 1002
 }
