@@ -38,6 +38,14 @@ class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
         return dateFormatter
     }()
     
+    /* ShelfTableVCに渡すコンテキスト */
+    lazy var shelfContext: NSManagedObjectContext = {
+        //新規のコンテキストを生成して、既存のコーティネータに接続
+        let context = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+        context.persistentStoreCoordinator = self.coreDataStack.context.persistentStoreCoordinator
+        return context
+    }()
+    
     // MARK: - ビューライフサイクル
     //ビュー初期化
     override func viewDidLoad() {
@@ -73,6 +81,15 @@ class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
         // Dispose of any resources that can be recreated.
     }
 
+    //画面遷移
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
+        if segue.identifier == "PickShelf" {
+            let vc = segue.destinationViewController as! ShelfTableViewController
+            vc.context = self.shelfContext
+        }
+    }
+    
     // MARK: - メソッド
     @IBAction func wishChange(sender: UISwitch) {
         book.wish = sender.on
@@ -206,11 +223,4 @@ class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
         
     }
      
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-
 }
