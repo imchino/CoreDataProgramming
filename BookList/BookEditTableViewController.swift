@@ -12,7 +12,6 @@ import CoreData
 class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
                                                           UIImagePickerControllerDelegate,
                                                           UINavigationControllerDelegate {
-
     // MARK: - プロパティ
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var authorTextField: UITextField!
@@ -73,7 +72,6 @@ class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
         } else {
             self.title = "Edit Book"
         }
-        
     }
 
     override func didReceiveMemoryWarning() {
@@ -84,7 +82,7 @@ class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
     //画面遷移
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         
-        if segue.identifier == "PickShelf" {
+        if segue.identifier == "PICKSHELF" {
             let vc = segue.destinationViewController as! ShelfTableViewController
             vc.context = self.shelfContext
         }

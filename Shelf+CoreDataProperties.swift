@@ -2,7 +2,7 @@
 //  Shelf+CoreDataProperties.swift
 //  BookList
 //
-//  Created by chino on 2016/05/11.
+//  Created by chino on 2016/05/26.
 //  Copyright © 2016年 chino. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -14,7 +14,7 @@ import CoreData
 
 extension Shelf {
 
-    @NSManaged var diplayOrder: NSNumber?
+    @NSManaged var displayOrder: NSNumber?
     @NSManaged var name: String?
     @NSManaged var books: NSSet?
 
