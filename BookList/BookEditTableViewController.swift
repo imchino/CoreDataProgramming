@@ -81,8 +81,7 @@ class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
 
     //画面遷移
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        
-        if segue.identifier == "PICKSHELF" {
+        if segue.identifier == Identifier.segueToShelfTableVC {
             let vc = segue.destinationViewController as! ShelfTableViewController
             vc.context = self.shelfContext
         }

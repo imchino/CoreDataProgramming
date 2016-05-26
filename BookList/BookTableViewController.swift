@@ -76,7 +76,7 @@ class BookTableViewController: UITableViewController {
     
     //画面遷移の直前
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == SegueIdentifier.editBook {
+        if segue.identifier == Identifier.segueToEditTableVC {
             var sendBook: Book  //渡すbookオブジェクト
             if let tappedCell = sender as? UITableViewCell {
             //セルタップからの遷移なら
@@ -176,7 +176,7 @@ class BookTableViewController: UITableViewController {
 
     //セル生成
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("BookCell", forIndexPath: indexPath) as! BookTableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(Identifier.cellInBookTable, forIndexPath: indexPath) as! BookTableViewCell
 
         let book = books[indexPath.row] //データソースからセルを生成
         cell.configureWithBook(book)    //セルにbookオブジェクト内容を表示させる
@@ -227,7 +227,7 @@ class BookTableViewController: UITableViewController {
         
         //空の管理オブジェクトをコンテキストに生成して、編集画面へ遷移
         NSEntityDescription.insertNewObjectForEntityForName(EntityName.book, inManagedObjectContext: coreDataStack.context)
-        performSegueWithIdentifier(SegueIdentifier.editBook, sender: nil)   //senderは「nil」なので、通常の遷移とは別あつかい
+        performSegueWithIdentifier(Identifier.segueToEditTableVC, sender: nil)   //senderは「nil」なので、通常の遷移とは別あつかい
         
 //        /* 新規セルとしてオブジェクトを追加するテスト */
 //        //コンテキストに追加された、新規Bookオブジェクトを生成し、データソースの先頭に追加
@@ -297,13 +297,3 @@ class BookTableViewCell: UITableViewCell {
     }
 }
 
-//管理オブジェクトのエンティティ名
-struct EntityName {
-    static let book = "Book"
-    static let photo = "Photo"
-}
-
-//セグエの識別子
-struct SegueIdentifier {
-    static let editBook = "EDITBOOK"
-}

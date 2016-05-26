@@ -24,6 +24,7 @@
 		A4A8C7681CC3956500DC6196 /* Book.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4A8C7661CC3956500DC6196 /* Book.swift */; };
 		A4A8C76A1CC4CD8000DC6196 /* BookTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4A8C7691CC4CD8000DC6196 /* BookTableViewController.swift */; };
 		A4F3E0BF1CF6C9EE006358AD /* ShelfTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F3E0BE1CF6C9ED006358AD /* ShelfTableViewController.swift */; };
+		A4F3E0C31CF6D6C2006358AD /* parameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F3E0C21CF6D6C2006358AD /* parameters.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +70,7 @@
 		A4A8C7661CC3956500DC6196 /* Book.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Book.swift; path = ../Book.swift; sourceTree = "<group>"; };
 		A4A8C7691CC4CD8000DC6196 /* BookTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookTableViewController.swift; sourceTree = "<group>"; };
 		A4F3E0BE1CF6C9ED006358AD /* ShelfTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShelfTableViewController.swift; sourceTree = "<group>"; };
+		A4F3E0C21CF6D6C2006358AD /* parameters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = parameters.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,6 +121,7 @@
 		A48461721CC0C9A2006FFFA1 /* BookList */ = {
 			isa = PBXGroup;
 			children = (
+				A4F3E0C21CF6D6C2006358AD /* parameters.swift */,
 				A48461731CC0C9A2006FFFA1 /* AppDelegate.swift */,
 				A4A8C7691CC4CD8000DC6196 /* BookTableViewController.swift */,
 				A439D3B41CE5C9E50098FD5F /* BookEditTableViewController.swift */,
@@ -289,6 +292,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A488C7C01CE339480052711B /* Shelf.swift in Sources */,
+				A4F3E0C31CF6D6C2006358AD /* parameters.swift in Sources */,
 				A439D3B51CE5C9E50098FD5F /* BookEditTableViewController.swift in Sources */,
 				A4F3E0BF1CF6C9EE006358AD /* ShelfTableViewController.swift in Sources */,
 				A48461741CC0C9A2006FFFA1 /* AppDelegate.swift in Sources */,

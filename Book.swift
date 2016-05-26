@@ -98,15 +98,10 @@ class Book: NSManagedObject {
             return
         }
         
-        //タイトルがカラ => Core Dataで自動チェック
-        let title = value.memory as! String
-//        if title.isEmpty {
-//            print("タイトルがカラ　=> システムチェックを利用")
-//            return
-//        }
         
         //スペース除去後のタイトルが、カラでなければOK
         let whitespace = NSCharacterSet.whitespaceCharacterSet()
+        let title = value.memory as! String
         let trimmedTitle = title.stringByTrimmingCharactersInSet(whitespace)
         if !(trimmedTitle.isEmpty) {
             print("タイトルは正しく入力済み")
@@ -125,9 +120,3 @@ class Book: NSManagedObject {
     
 }
 
-// MARK: - エラードメイン
-let kBookListErrorDomain = "com.playground.BookList.errorDomain"
-enum BookErrorCode: Int {
-    case InvalidTitle = 1001
-    case NoUrl        = 1002
-}
