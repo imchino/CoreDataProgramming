@@ -123,10 +123,10 @@
 			children = (
 				A4F3E0C21CF6D6C2006358AD /* parameters.swift */,
 				A48461731CC0C9A2006FFFA1 /* AppDelegate.swift */,
+				A48461A41CC0CEEE006FFFA1 /* CoreDataStack.swift */,
 				A4A8C7691CC4CD8000DC6196 /* BookTableViewController.swift */,
 				A439D3B41CE5C9E50098FD5F /* BookEditTableViewController.swift */,
 				A4F3E0BE1CF6C9ED006358AD /* ShelfTableViewController.swift */,
-				A48461A41CC0CEEE006FFFA1 /* CoreDataStack.swift */,
 				A4A8C7661CC3956500DC6196 /* Book.swift */,
 				A488C7B91CE339480052711B /* Book+CoreDataProperties.swift */,
 				A488C7BD1CE339480052711B /* Photo.swift */,

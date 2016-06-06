@@ -83,7 +83,7 @@ class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == Identifier.segueToShelfTableVC {
             let vc = segue.destinationViewController as! ShelfTableViewController
-            vc.context = self.shelfContext
+            vc.sub_Context = self.shelfContext
         }
     }
     

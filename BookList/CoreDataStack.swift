@@ -67,9 +67,10 @@ class CoreDataStack {
         })
     }
     
-    //コンテキストを保存
+    //コンテキスト上のオブジェクトをディスクに保存
     func saveContext() throws {
         if context.hasChanges {
+        //コンテキストに変更があれば
             do {
                 try context.save()
             } catch let error as NSError {

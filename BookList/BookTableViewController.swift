@@ -49,7 +49,7 @@ class BookTableViewController: UITableViewController {
             })
         })
         
-        //オブザーバに登録（コンテキストが保存されたときを監視）
+        //オブザーバに登録（コンテキストを監視）
         let nc = NSNotificationCenter.defaultCenter()
         nc.addObserver(self, selector: Selector.contextDidSave , name: NSManagedObjectContextDidSaveNotification, object: coreDataStack.context)
     }
@@ -162,7 +162,6 @@ class BookTableViewController: UITableViewController {
 
     }
     
-    
     // MARK: - テーブルビューのデリゲートメソッド
     //セクション数
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -224,24 +223,9 @@ class BookTableViewController: UITableViewController {
     // MARK: - ナビゲーション
     //新規ブック追加（ナビケーションバー.右ボタン）
     @IBAction func addBook(sender: UIBarButtonItem) {
-        
         //空の管理オブジェクトをコンテキストに生成して、編集画面へ遷移
         NSEntityDescription.insertNewObjectForEntityForName(EntityName.book, inManagedObjectContext: coreDataStack.context)
         performSegueWithIdentifier(Identifier.segueToEditTableVC, sender: nil)   //senderは「nil」なので、通常の遷移とは別あつかい
-        
-//        /* 新規セルとしてオブジェクトを追加するテスト */
-//        //コンテキストに追加された、新規Bookオブジェクトを生成し、データソースの先頭に追加
-//        let newBook = NSEntityDescription.insertNewObjectForEntityForName("Book", inManagedObjectContext: coreDataStack.context) as! Book
-//        newBook.title  = "仮タイトル"    //titleプロパティは必須項目
-//        newBook.author = "不明な著者名"
-//        newBook.url = NSURL(string: "http://www.sample.com")
-//        books.insert(newBook, atIndex: 0)
-//        
-//        //テーブルを更新する
-//        //コンテキスト保存（ブックを追加 or 削除のタイミングで保存）
-//        let indexPath = NSIndexPath(forRow: 0, inSection: 0)
-//        tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-//        try! coreDataStack.saveContext()
     }
     
     //全書籍 <-> 欲しいものリスト
@@ -256,7 +240,6 @@ class BookTableViewController: UITableViewController {
         fetchBooks()    //フェッチ実行
     }
     
-
     //演習モードのとき、新規ブックは追加させない
     override func setEditing(editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: true)
