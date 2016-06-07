@@ -352,11 +352,13 @@ class ShelfTableViewController: UITableViewController {
     override func tableView(tableView: UITableView,
                             targetIndexPathForMoveFromRowAtIndexPath sourceIndexPath: NSIndexPath,
                             toProposedIndexPath proposedDestinationIndexPath: NSIndexPath) -> NSIndexPath {
+        print("移動先をチェック")
         //移動先はデフォルト
         var destinationIndexPath = proposedDestinationIndexPath
 
-        if proposedDestinationIndexPath == shelfs.count {
+        if proposedDestinationIndexPath.row == shelfs.count {
         //移動先がテーブルの追加セルだった場合
+            print("このセル移動は禁止！")
             //移動先は無効にする（移動元に戻す）
             destinationIndexPath = sourceIndexPath
         }
