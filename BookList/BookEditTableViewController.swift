@@ -11,7 +11,7 @@ import CoreData
 
 class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
                                                           UIImagePickerControllerDelegate,
-                                                          UINavigationControllerDelegate {
+                                                          UINavigationControllerDelegate, shelfTableViewControllerDelegate {
     // MARK: - プロパティ
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var authorTextField: UITextField!
@@ -79,13 +79,6 @@ class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
         // Dispose of any resources that can be recreated.
     }
 
-    //画面遷移
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == Identifier.segueToShelfTableVC {
-            let vc = segue.destinationViewController as! ShelfTableViewController
-            vc.sub_Context = self.shelfContext
-        }
-    }
     
     // MARK: - メソッド
     @IBAction func wishChange(sender: UISwitch) {
@@ -164,8 +157,39 @@ class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
         picker.dismissViewControllerAnimated(true, completion: nil)
     }
     
+    //本棚VC側で、セルがタップされたタイミングに本棚を受け取る
+    func shelfTableViewController(controller: ShelfTableViewController, didSelectShelfWithObjectID objectID: NSManagedObjectID?) {
+        
+        //不要な本棚オブジェクトのフォールト
+        if let previousShelf = book.shelf {
+            coreDataStack.context.refreshObject(previousShelf, mergeChanges: false)
+        }
+        
+        //指定された本棚オブジェクトを取得
+        guard let objectID = objectID else {
+            book.shelf = nil
+            shelfNameLabel.text = nil
+            return
+        }
+
+        let shelf = coreDataStack.context.objectWithID(objectID) as! Shelf
+        book.shelf = shelf
+        shelfNameLabel.text = shelf.name
+        print("Bookオブジェクトの本棚を設定しました")
+    }
     
     // MARK: - Navigation
+    //画面遷移
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == Identifiers.segueToShelfTVC.rawValue {
+            let vc = segue.destinationViewController as! ShelfTableViewController
+            //コンテキストと、表示中Bookオブジェクトに関係づけた本棚オブジェクトIDを渡す
+            vc.sub_Context = self.shelfContext
+            vc.selectedObjectID = book.shelf?.objectID
+            vc.delegate = self  //本棚ビューコントローラ.delgeteに、Book編集VCを格納
+        }
+    }
+    
     //bookの編集をキャンセル（コンテキストを保存しない）
     @IBAction func cancel(sender: UIBarButtonItem) {
         print("編集をキャンセルしたので、コンテキストをロールバックします...")
@@ -214,10 +238,6 @@ class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
             alert.addAction(okAction)
             presentViewController(alert, animated: true, completion: nil)
         }
-        
-        
-        
-        
     }
      
 }

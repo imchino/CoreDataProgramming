@@ -9,13 +9,20 @@
 import UIKit
 import CoreData
 
+//選択した本棚オブジェクトIDを、Book編集画面に渡すデリゲートメソッドを定義
+protocol shelfTableViewControllerDelegate: class {
+    func shelfTableViewController(controller: ShelfTableViewController, didSelectShelfWithObjectID objectID: NSManagedObjectID?)
+}
+
 class ShelfTableViewController: UITableViewController {
-    
+
+    // MARK: - プロパティ
+    // Book編集画面から引き受けるプロパティ
+    var selectedObjectID: NSManagedObjectID?    //選択中の本棚オブジェクトID（永続ストアから常に同一の管理オブジェクトを参照できるID）
     var sub_Context: NSManagedObjectContext!    //メインとは別の2つ目のコンテキスト
+
     var shelfs = [Shelf]()                  //全ての本棚を格納するデータソース
-    
     var isSingleEdit = false    //スワイプ削除かどうか（スワイプ編集時には挿入ボタン不可にするため）
-    
     //フェッチリクエスト（Shelfエンティティを読み出し）
     var fetchRequest: NSFetchRequest = {
         let request = NSFetchRequest(entityName: "Shelf")
@@ -24,6 +31,9 @@ class ShelfTableViewController: UITableViewController {
         
         return request
     }()
+    
+    //デリゲートプロパティ
+    weak var delegate: shelfTableViewControllerDelegate?    //Book編集画面VCが格納される
     
     // MARK: - ビューライフサイクル
     override func viewDidLoad() {
@@ -68,8 +78,6 @@ class ShelfTableViewController: UITableViewController {
         navigationItem.hidesBackButton = editing    //Yes: 隠す, No: 表示
     }
     
-
-    
     // MARK: - Core Data Private Method
     //フェッチリクエストを実行して、テーブル表示を更新
     private func fetchShefs() {
@@ -111,8 +119,51 @@ class ShelfTableViewController: UITableViewController {
         }
     }
     
+    //本棚セルが選択された
+    private func selectedShelfAtIndexPath(tappedIndex: Int) {
+
+        var previousIndex: Int?        //選択中の本棚がデータソース中の何番目か（nil: 選択中の本棚は無し）
+        //選択中の本棚があれば、データソース中の何番目かをオブジェクトIDを使って特定する
+        if let iD = selectedObjectID {
+            print("previousIndex <= selectedID")
+            let objectIDs = shelfs.map({$0.objectID})
+            previousIndex = objectIDs.indexOf(iD)
+        }
+        
+        /* selectedObjectID を更新 */
+        //タップしたセルが選択中の本棚セルなら、選択解除（選択されている本棚セルは無い状態）
+        if tappedIndex == previousIndex {
+            print("selectedIDを解除しました...")
+            selectedObjectID = nil
+        }
+        //タップしたセルが指定本棚セルでない場合、タップしたセルの本棚を選択中のオブジェクトIDにする
+        if tappedIndex != previousIndex {
+            print("selectedIDを更新しました！")
+            selectedObjectID = shelfs[tappedIndex].objectID
+        }
+        
+        /* テーブルビューを更新 */
+        //本棚が何も選択されていない場合
+        if let previousIndex = previousIndex {
+            print("チェックマークをOFF")
+            let indexPath = NSIndexPath(forRow: previousIndex, inSection: 0)
+            let previousCell = tableView.cellForRowAtIndexPath(indexPath)
+            previousCell?.accessoryType = .None
+        }
+        //本棚が選択されている場合
+        if let _ = selectedObjectID {
+            print("チェックマークをON")
+            let indexPath = NSIndexPath(forRow: tappedIndex, inSection: 0)
+            let newCell = tableView.cellForRowAtIndexPath(indexPath)
+            newCell?.accessoryType = .Checkmark
+        }
+        
+        //デリゲートメソッドを実行（実装はBook編集画面）
+        delegate?.shelfTableViewController(self, didSelectShelfWithObjectID: selectedObjectID)
+    }
+    
     //本棚名を変更する（アラートビューの完了ハンドラ）
-    func updateShelfAtIndex(index: Int, withName newName: String?) {
+    private func updateShelfAtIndex(index: Int, withName newName: String?) {
         //データソースの本棚を操作
         let editingShelf = shelfs[index]
         editingShelf.name = newName
@@ -219,13 +270,25 @@ class ShelfTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCellWithIdentifier(cellIdShelf, forIndexPath: indexPath)
 
         var shelfName = String?()   //本棚名の初期値は空欄
-        if indexPath.row < shelfs.count {
-        //本棚配列から名前を取得
-            shelfName = shelfs[indexPath.row].name
-        }
+        var cellAccessoryType: UITableViewCellAccessoryType = .None //セル.アクセサリタイプ（デフォルト値: 無し）
         
+        if indexPath.row < shelfs.count {
+        //データソース範囲内のセルならば
+            //本棚配列から名前を取得
+            let shelf = shelfs[indexPath.row]
+            shelfName = shelf.name
+            
+            if let selectedID = selectedObjectID {
+            //選択されている本棚オブジェクトであれば
+                //セル.アクセサリタイプはチェックマーク
+                if selectedID == shelf.objectID { cellAccessoryType = .Checkmark }
+            }
+        }
+        //セルにアクセサリを指定
+        cell.accessoryType = cellAccessoryType
         //セルに本棚名を表示
         cell.textLabel?.text = shelfName
+        
         return cell
     }
     
@@ -286,7 +349,11 @@ class ShelfTableViewController: UITableViewController {
     //セル選択したとき
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         //テーブルが編集モードでなければ何もしない
-        if !(tableView.editing) { return }
+        if !(tableView.editing) {
+            tableView.deselectRowAtIndexPath(indexPath, animated: true)
+            selectedShelfAtIndexPath(indexPath.row)
+            return
+        }
         
         /* 以下、テーブルが編集モード時の処理 */
         if indexPath.row < shelfs.count {
@@ -333,8 +400,6 @@ class ShelfTableViewController: UITableViewController {
         if startIndex > endIndex {
             //入れ替える
             swap(&startIndex, &endIndex)
-//            startIndex = toIndexPath.row
-//            endIndex = fromIndexPath.row
             print("セルが逆方向に移動されました！")
             print("スタート: \(startIndex), エンド: \(endIndex)")
         }
@@ -373,14 +438,8 @@ class ShelfTableViewController: UITableViewController {
     }
     */
 
-    /*
     // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
+//    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+//    }
 
 }

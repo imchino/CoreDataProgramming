@@ -19,7 +19,6 @@ struct EntityName {
 //識別子
 struct Identifier {
     static let segueToEditTableVC  = "EDITBOOK"
-    static let segueToShelfTableVC = "PICKSHELF"
     static let cellInBookTable     = "BookCell"
     static let cellInShelfTable    = "ShelfCell"
 }
