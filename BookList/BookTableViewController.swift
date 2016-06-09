@@ -27,29 +27,28 @@ class BookTableViewController: UITableViewController {
         return fetchRequest
     }()
 
-    
     // MARK: - ライフサイクル
     override func viewDidLoad() {
         super.viewDidLoad()
 
         //ナビゲーションバー初期化
         self.navigationItem.leftBarButtonItem = editButtonItem()    //左に編集ボタン
-        
         //テーブルビュー初期化
         tableView.rowHeight = UITableViewAutomaticDimension //Self-Sizeingセルに対して、高さを自動設定
         tableView.estimatedRowHeight = 56.0                 //セルの基準高さを56ptに指定
-        
+
+        //UI待機
+        userInterancitonEnabled(false)
         //コーディネータにストアを接続
-        userInterancitonEnabled(false)  //UI待機
         coreDataStack.addPersistentStoreWithCompletionHandler({
-            //非同期処理が完了時の処理
             dispatch_async(dispatch_get_main_queue(), {
-                self.userInterancitonEnabled(true)  //UI許可
+                //非同期処理が完了時の処理
+                self.userInterancitonEnabled(true)  //UI待機を解除
                 self.fetchBooks()                   //ストア接続完了したらフェッチ
             })
         })
         
-        //オブザーバに登録（コンテキストを監視）
+        //オブザーバに登録（主コンテキストを監視: 保存されたら通知）
         let nc = NSNotificationCenter.defaultCenter()
         nc.addObserver(self, selector: Selector.contextDidSave , name: NSManagedObjectContextDidSaveNotification, object: coreDataStack.context)
     }
@@ -59,14 +58,10 @@ class BookTableViewController: UITableViewController {
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
     
     //非同期処理が完了するまで、UIを待機させる
     private func userInterancitonEnabled(enabled: Bool) {
+        /* ナビゲーションボタンアイテムの待機<=>解除 */
         let segmentCntrol = self.navigationItem.titleView as! UISegmentedControl
         segmentCntrol.enabled = enabled
         
@@ -76,19 +71,19 @@ class BookTableViewController: UITableViewController {
     
     //画面遷移の直前
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == Identifier.segueToEditTableVC {
+        if segue.identifier == Identifiers.segueToEditTVC.rawValue {
             var sendBook: Book  //渡すbookオブジェクト
             if let tappedCell = sender as? UITableViewCell {
-            //セルタップからの遷移なら
+            //セルタップからの遷移なら、データソースにある該当Bookオブジェクトを渡す
                 let indexPath = tableView.indexPathForCell(tappedCell)!
-                sendBook = self.books[indexPath.row]
+                sendBook = books[indexPath.row]
             } else {
-            //新規ブック作成（＋ボタンをタップ）なら、コンテキスト上のbookを渡す
+            //新規ブック作成（ナビゲーション.＋ボタン）なら、コンテキスト上に新規bookを作成して渡す
                 let newBookOnContext = coreDataStack.context.insertedObjects.first as! Book
                 sendBook = newBookOnContext
             }
             
-            //遷移先のプロパティを取得して、プロパティを渡す
+            //遷移先VCのプロパティを取得して、プロパティを渡す
             let naviVC = segue.destinationViewController as! UINavigationController
             let editVC = naviVC.topViewController as! BookEditTableViewController
             editVC.book = sendBook
@@ -117,10 +112,10 @@ class BookTableViewController: UITableViewController {
             return
         }
         
-        //UIを更新する処理
-        
+        /* UIを更新する処理 */
         //取得した通知内容から更新されたbookオブジェクトを取得して、当該セルを更新
         let updatedObjects = userinfo[NSUpdatedObjectsKey] as! NSSet    //通知内容から、コンテキスト上で更新された全ての型の管理オブジェクトを抽出（集合に変換）
+
         for object in updatedObjects {
             print("アップデートされたオブジェクトを取得！")
             let entityName = (object as! NSManagedObject).entity.name   //取得したオブジェクトのエンティティ名

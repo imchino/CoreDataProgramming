@@ -40,9 +40,14 @@ class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
     /* ShelfTableVCに渡すコンテキスト */
     lazy var shelfContext: NSManagedObjectContext = {
         //新規のコンテキストを生成して、既存のコーティネータに接続
-        let context = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
-        context.persistentStoreCoordinator = self.coreDataStack.context.persistentStoreCoordinator
-        return context
+        let shelfContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+        shelfContext.persistentStoreCoordinator = self.coreDataStack.context.persistentStoreCoordinator
+
+        //コンテキストが保存されるタイミングを監視
+        let nc = NSNotificationCenter.defaultCenter()
+        nc.addObserver(self, selector: Selector.shelfContextDidSave, name: NSManagedObjectContextDidSaveNotification , object: shelfContext)
+        
+        return shelfContext
     }()
     
     // MARK: - ビューライフサイクル
@@ -73,6 +78,11 @@ class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
             self.title = "Edit Book"
         }
     }
+    
+    //オブザーバ削除
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -83,6 +93,16 @@ class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
     // MARK: - メソッド
     @IBAction func wishChange(sender: UISwitch) {
         book.wish = sender.on
+    }
+    
+    //本棚コンテキストが保存されたら、オブザーバから通知される
+    func shelfContextDidSave(notification: NSNotification) {
+        print("オブザーバ通知: 本棚コンテキストが保存されました！ => \(book.shelf?.name)")
+        //主コンテキストに、保存があった本棚コンテキストを結合する
+        let mainContext = coreDataStack.context
+        mainContext.mergeChangesFromContextDidSaveNotification(notification)
+        
+        shelfNameLabel.text = book.shelf?.name
     }
     
     // MARK: - デリゲートメソッド
@@ -162,16 +182,19 @@ class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
         
         //不要な本棚オブジェクトのフォールト
         if let previousShelf = book.shelf {
+        //表示中ブックに本棚が設定済みなら
             coreDataStack.context.refreshObject(previousShelf, mergeChanges: false)
         }
         
-        //指定された本棚オブジェクトを取得
+        /* 指定された本棚オブジェクトを取得 */
         guard let objectID = objectID else {
+        //objectIDがnilならば、本棚は指定されていないのでラベルも空欄
             book.shelf = nil
             shelfNameLabel.text = nil
             return
         }
 
+        //objectIDに該当する本棚をフェッチ
         let shelf = coreDataStack.context.objectWithID(objectID) as! Shelf
         book.shelf = shelf
         shelfNameLabel.text = shelf.name
@@ -184,7 +207,7 @@ class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
         if segue.identifier == Identifiers.segueToShelfTVC.rawValue {
             let vc = segue.destinationViewController as! ShelfTableViewController
             //コンテキストと、表示中Bookオブジェクトに関係づけた本棚オブジェクトIDを渡す
-            vc.sub_Context = self.shelfContext
+            vc.sub_Context = self.shelfContext  //コンテキストをコピー
             vc.selectedObjectID = book.shelf?.objectID
             vc.delegate = self  //本棚ビューコントローラ.delgeteに、Book編集VCを格納
         }
@@ -194,7 +217,18 @@ class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
     @IBAction func cancel(sender: UIBarButtonItem) {
         print("編集をキャンセルしたので、コンテキストをロールバックします...")
         editingTextFeild?.resignFirstResponder()    //キーボード収納（テキスト編集完了の処理 => コンテキストの状態を同期）
+        
+        /* マージとロールバックの整合性対応 */
+        //削除オブジェクトがあるshelfContextとのマージによって、主コンテキストの変更履歴に生成される削除オブジェクト
+        let deletedObjects = coreDataStack.context.deletedObjects
+        
         coreDataStack.context.rollback()            //コンテキストの状態を（前回の保存、フェッチ時点に）戻す
+        
+        //ロールバックによって変更履歴から復活した削除オブジェクトを、改めてコンテキストから削除してから保存
+        for object in deletedObjects {
+            coreDataStack.context.deleteObject(object)
+        }
+        try! coreDataStack.saveContext()
         
         dismissViewControllerAnimated(true, completion: nil)    //画面を一覧表示へ
     }
@@ -241,3 +275,9 @@ class BookEditTableViewController: UITableViewController, UITextFieldDelegate,
     }
      
 }
+
+// MARK: - セレクタエクステンション
+private extension Selector {
+    static let shelfContextDidSave = #selector(BookEditTableViewController.shelfContextDidSave(_:))
+}
+
